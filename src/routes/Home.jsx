@@ -1,13 +1,13 @@
 import Banner from '../components/Banner'
 import Search from '../components/Search/Search'
-import HouseList from '../components/Houses/HouseList';
+import PropertyList from '../components/Properties/PropertyList';
 
 const Home = () => {
   return (
     <>
       <Banner />
       <Search />
-      <HouseList />
+      <PropertyList />
     </>
   )
 }

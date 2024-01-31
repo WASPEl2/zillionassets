@@ -9,14 +9,14 @@ const Header = () => {
     <chakra.header id="header" borderBottom='1px solid rgb(0,0,0,0.3)'>
       <Flex w='100%' py='5' align='center' justify='space-between'>
         <Link to='/'>
-          <Heading fontSize='3xl' color='pink.700'>Estatery.</Heading>
+          <Heading fontSize='3xl' color='emerald.700'>Zillionassets</Heading>
         </Link>
         {
           isDesktop ? (
           <>
             <ButtonGroup as='nav' variant='link' spacing='5'>
                 {
-                  ['Home', 'Features', 'About Us'].map((item)=>(
+                  ['Home', 'About Us'].map((item)=>(
                     <Button fontSize='16px' key={item}>{item}</Button>
                     ))
                 }
@@ -24,7 +24,7 @@ const Header = () => {
 
             <HStack>
               <Button size='sm' variant='solid'>Contact</Button>
-              <Button size='sm' variant='outline'>Sign up</Button>
+              <Button size='sm' variant='outline'>Log in</Button>
             </HStack>
           </>
           ) : (

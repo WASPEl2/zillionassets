@@ -1,0 +1,13 @@
+.images {
+    width: 910px;
+}
+
+@media (max-width: 968px) {
+    .arrow {
+        display: none !important;
+    }
+
+    .images {
+        width: 100vw;
+    }
+}

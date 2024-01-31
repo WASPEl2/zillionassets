@@ -1,11 +1,9 @@
-import HouseDetails from "../components/PropertyDetails/HouseDetails";
+import PropertyDetails from "../components/PropertyDetails/PropertyDetails";
 
-const PropertyDetails = () => {
+const AssetDetails = () => {
   return (
-    <>      
-      <HouseDetails />
-    </>
+      <PropertyDetails />
   )
 }
 
-export default PropertyDetails
+export default AssetDetails

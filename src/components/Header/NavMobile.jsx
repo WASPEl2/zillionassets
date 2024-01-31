@@ -24,12 +24,12 @@ const NavMobile = () => {
                 <DrawerBody px='14' mt='4'>
                     <VStack as='nav' spacing='8' alignItems='left'>
                         {
-                            ['Home', 'Features', 'About Us'].map((item)=>(
+                            ['Home', 'About Us'].map((item)=>(
                                 <Button variant='link' key={item}>{item}</Button>
                             ))
                         }
                         <Button size='sm' variant='solid'>Contact</Button>
-                        <Button size='sm' variant='outline'>Sign up</Button>
+                        <Button size='sm' variant='outline'>Log in</Button>
                     </VStack>
                 </DrawerBody>
             </DrawerContent>

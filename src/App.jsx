@@ -6,7 +6,7 @@ import Home from './routes/Home';
 import PropertyDetails from './routes/PropertyDetails';
 import Footer from './components/Footer'
 import HouseProvider from './context/HouseContext';
-import HouseDetails from './components/PropertyDetails/HouseDetails';
+import AssetDetails from './components/PropertyDetails/PropertyDetails';
 
 const App = () => {
   return (
@@ -16,7 +16,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='property-details' element={ <PropertyDetails /> } >
-            <Route path=":propertyId" element={<HouseDetails />} />
+            <Route path=":propertyId" element={<AssetDetails />} />
           </Route>
           <Route path="*"
                 element={ <main style={{ padding: "1rem" }}>
