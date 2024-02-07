@@ -11,12 +11,16 @@ import {
   Image,
   Flex,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
+import { config } from "../../data";
 
 const InsertInfo = () => {
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState("");
+  const [condoList, setCondoList] = useState([]);
+  const [selectedCondo, setSelectedCondo] = useState('');
+
 
   const [formData, setFormData] = useState({
     unit_code: "",
@@ -53,9 +57,29 @@ const InsertInfo = () => {
     partner_mail: "",
     partner_number: "",
     tranfer_fee: "",
-    ppt_writer: 1,
     notes: "",
   });
+
+  useEffect(() => {
+        fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `${config.api}/zillionassets/en/insert-asset/condo-list`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setCondoList(data)
+      } else {
+        console.error("Error fetching data:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const parsePropertyData = (e) => {
     const { value } = e.target;
@@ -227,48 +251,6 @@ const InsertInfo = () => {
       [name]: value,
     }));
 
-    if (name === "ppt_title") {
-      try {
-        const sanitizedValue = value.replace(/\s+/g, " ");
-
-        setFormData((prevData) => ({
-          ...prevData,
-          ppt_title: sanitizedValue,
-        }));
-
-        const response = await fetch(
-          `${config.apiUrl}zillionassets/en/insert-asset/auto-fill/${sanitizedValue}`
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          // Update the form data with the fetched data
-          setFormData((prevData) => ({
-            ...prevData,
-            primary_area: data.primary_area || "",
-            area_soi: data.area_soi || "",
-            ppt_type: data.ppt_type || "",
-            ppt_location_detail: data.ppt_location_detail || "",
-            ppt_assets_name: data.ppt_assets_name || "",
-            ppt_size: data.ppt_size || "",
-            ppt_decoration: data.ppt_decoration || "",
-            ppt_nearby: data.ppt_nearby ? data.ppt_nearby : [],
-            ppt_nearbytrain: data.ppt_nearbytrain ? data.ppt_nearbytrain : [],
-            ppt_facilities: data.ppt_facilities ? data.ppt_facilities : [],
-            ppt_room_description: data.ppt_room_description || "",
-            ppt_bedroom: data.ppt_bedroom || "",
-            ppt_roomtype: data.ppt_roomtype || "",
-            ppt_showerroom: data.ppt_showerroom || "",
-            ppt_petfriendly: data.ppt_petfriendly || "",
-          }));
-        } else {
-          console.error("Error fetching data:", response.status);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
     if (name === "area_soi") {
       // Use regular expression to find the primary area
       const primaryAreaMatch = value.match(/^(.*?)(?:\s+\d|$)/);
@@ -280,7 +262,7 @@ const InsertInfo = () => {
       }));
     }
     // Check if the updated field is 'ppt_room_description'
-    if (name === "ppt_room_description") {
+    else if (name === "ppt_room_description") {
       // Use regular expression to find numbers followed by 'Bedroom' or 'Bathroom'
       const bedroomMatch = value.match(/(\d+)\s*Bedroom/i);
       const bathroomMatch = value.match(/(\d+)\s*Bathroom/i);
@@ -302,6 +284,30 @@ const InsertInfo = () => {
     }));
   };
 
+  const handleSelectCondoChange = (e) => {
+    const selectedValue = e.target.value;
+    setSelectedCondo(selectedValue);
+
+    // Find the selected condo object based on selectedValue
+    const selectedCondoObject = condoList.find(condo => condo.ppt_assets_name === selectedValue);
+    if (selectedCondoObject) {
+      setFormData((prevData) => ({
+        ...prevData,
+        primary_area: selectedCondoObject.primary_area || "",
+        area_soi: selectedCondoObject.area_soi || "",
+        ppt_type: selectedCondoObject.ppt_type || "",
+        ppt_location_detail: selectedCondoObject.ppt_location_detail || "",
+        ppt_assets_name: selectedCondoObject.ppt_assets_name || "",
+        ppt_nearby: selectedCondoObject.ppt_nearby ? selectedCondoObject.ppt_nearby : [],
+        ppt_nearbytrain: selectedCondoObject.ppt_nearbytrain ? selectedCondoObject.ppt_nearbytrain : [],
+        ppt_facilities: selectedCondoObject.ppt_facilities ? selectedCondoObject.ppt_facilities : [],
+        ppt_petfriendly: selectedCondoObject.ppt_petfriendly || "",
+      }));
+    }
+  };
+
+
+
   const formatPrice = (value) => {
     // Ensure value is a string
     const stringValue = String(value);
@@ -318,14 +324,19 @@ const InsertInfo = () => {
   };
 
   const handleRemoveMedia = (index) => {
-    setFormData((prevData) => {
-      const updatedMedia = [...prevData.ppt_media];
-      updatedMedia.splice(index, 1); // Remove the image at the specified index
-      return {
-        ...prevData,
-        ppt_media: updatedMedia,
-      };
-    });
+      const isConfirmed = window.confirm("Are you sure you want to delete this media?");
+      if (!isConfirmed) {
+          return;
+      }
+
+      setFormData((prevData) => {
+          const updatedMedia = [...prevData.ppt_media];
+          updatedMedia.splice(index, 1); 
+          return {
+              ...prevData,
+              ppt_media: updatedMedia,
+          };
+      });
   };
 
   const handleSelectMainImage = (index) => {
@@ -483,10 +494,12 @@ const InsertInfo = () => {
       });
 
       const response = await fetch(
-        `${config.apiUrl}zillionassets/en/insert-asset`,
+        `${config.api}/zillionassets/en/insert-asset`,
         {
           method: "POST",
           body: formDataToSend,
+          credentials: 'include',
+          withCredentials: true,
         }
       );
 
@@ -545,11 +558,12 @@ const InsertInfo = () => {
     }
   };
   return (
+
     <Box>
       <Text textAlign='center' fontSize="lg" fontWeight="medium" color="gray.700" my={4}>
         Insert Asset
       </Text>
-      <form onSubmit={handleSubmit} style={{ marginLeft: "4rem" }}>
+      <form onSubmit={handleSubmit}>
         <FormControl mb={4}>
           <FormLabel htmlFor="ppt_media" fontSize="sm" fontWeight="medium" color="gray.700">
             Upload Images and Videos
@@ -568,26 +582,6 @@ const InsertInfo = () => {
             rounded="md"
             w="full"
           />
-          <Box mt={2}>
-            {formData.ppt_media.map((file, index) => (
-              <Box
-                key={index}
-                className="mr-2 px-2 flex items-center border rounded-lg"
-              >
-                <span>{file.name}</span>
-                <Button
-                _hover={{bgColor:'red',color:'white'}}
-                  type="button"
-                  bgColor='white'
-                  color="red"
-                  ml={2}
-                  onClick={() => handleRemoveMedia(index)}
-                >
-                  X
-                </Button>
-              </Box>
-            ))}
-          </Box>
         </FormControl>
         {formData.ppt_media.length !== 0 ? (
             <Box mb={4}>
@@ -602,29 +596,40 @@ const InsertInfo = () => {
                     cursor="pointer"
                     onClick={() => handleSelectMainImage(index)}
                     >
-                    {formData.mainImageIndex === index && (
-                    <Flex
-                        w='full'
-                        h='full'
-                        position="absolute"
-                        alignItems="center"
-                        justifyContent="center"
-                        bg="rgba(0, 0, 255, 0.50)"
-                        color="white"
-                        rounded="md"
-                    >
-                        Main Image
-                    </Flex>
-                    )}
-                    <Image
-                        src={URL.createObjectURL(file)}
-                        alt={`Img ${index}`}
-                        w="full"
-                        h="32"
-                        objectFit="cover"
-                        rounded="md"
-                    />
-                    
+                      {formData.mainImageIndex === index && (
+                      <Flex
+                          w='full'
+                          h='full'
+                          position="absolute"
+                          alignItems="center"
+                          justifyContent="center"
+                          bg="rgba(0, 0, 255, 0.50)"
+                          color="white"
+                          rounded="md"
+                      >
+                          Main Image
+                      </Flex>
+                      )}
+                      <Button
+                          position='absolute'
+                          _hover={{bgColor:'red',color:'white'}}
+                          type="button"
+                          bgColor='transparent'
+                          color="red"
+                          right={0}
+                          onClick={() => handleRemoveMedia(index)}
+                        >
+                          X
+                      </Button>
+                      <Image
+                          src={URL.createObjectURL(file)}
+                          alt={`Img ${index}`}
+                          w="full"
+                          h="32"
+                          objectFit="cover"
+                          rounded="md"
+                      />
+                      
                     </Box>
                 ))}
                 </Grid>
@@ -683,6 +688,29 @@ const InsertInfo = () => {
                 w="full"
             />
         </FormControl>
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+              Select from Condo that Exist
+            </FormLabel>
+            <Select
+                name="ppt_type"
+                mt={1}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+                value={selectedCondo}
+                onChange={handleSelectCondoChange}
+            >
+                <option value="">Select Condo</option>
+                {/* Map through condoList and render options */}
+                {condoList.map((condo, index) => (
+                    <option key={index} value={condo.ppt_assets_name}>
+                        {condo.ppt_assets_name}
+                    </option>
+                ))}
+            </Select>
+        </FormControl>
 
         <FormControl mb={4}>
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
@@ -693,7 +721,6 @@ const InsertInfo = () => {
                 value={formData.ppt_type}
                 onChange={handleChange}
                 mt={1}
-                p={2}
                 border="1px"
                 borderColor="gray.200"
                 rounded="md"
@@ -712,15 +739,542 @@ const InsertInfo = () => {
             </Select>
         </FormControl>
 
-        <Button
-          type="submit"
-          colorScheme="blue"
-          float="right"
-          mt={4}
-          isLoading={loading}
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </Button>
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            assets name
+            </FormLabel>
+            <Input
+                name="ppt_assets_name"
+                value={formData.ppt_assets_name}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            primary area
+            </FormLabel>
+            <Input
+                name="primary_area"
+                value={formData.primary_area}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            location detail
+            </FormLabel>
+            <Input
+                name="ppt_location_detail"
+                value={formData.ppt_location_detail}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            room number
+            </FormLabel>
+            <Input
+                name="ppt_room_number"
+                value={formData.ppt_room_number}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            floor unit
+            </FormLabel>
+            <Input
+                name="ppt_floor_unit"
+                value={formData.ppt_floor_unit}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            Building unit
+            </FormLabel>
+            <Input
+                name="ppt_tower_unit"
+                value={formData.ppt_tower_unit}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+        <Flex >
+          <FormControl mb={4} mr={2} w='50%'>
+              <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+              facing
+              </FormLabel>
+              <Input
+                  name="ppt_direction"
+                  value={formData.ppt_direction}
+                  onChange={handleChange}
+                  mt={1}
+                  p={2}
+                  border="1px"
+                  borderColor="gray.200"
+                  rounded="md"
+                  w="full"
+              />
+          </FormControl>
+
+          <FormControl mb={4} w='30%'>
+              <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+              size
+              </FormLabel>
+              <Flex>
+                <Input
+                  name="ppt_size"
+                  value={formData.ppt_size}
+                  onChange={handleChange}
+                  mt={1}
+                  p={2}
+                  border="1px"
+                  borderColor="gray.200"
+                  rounded="md"
+                  w="full"
+                />
+                <Box pl={1} my="auto"> SQM </Box>
+              </Flex>
+              
+          </FormControl>
+        </Flex>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            room description
+            </FormLabel>
+            <Textarea
+              name="ppt_room_description"
+              value={formData.ppt_room_description}
+              onChange={handleChange}
+              mt={1}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              rounded="md"
+              w="full"
+            />
+        </FormControl>
+            
+        <Flex >
+          <FormControl mb={4} mr={2}>
+              <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+              NO. of bedrooms
+              </FormLabel>
+              <Input
+                  name="ppt_bedroom"
+                  value={formData.ppt_bedroom}
+                  onChange={handleChange}
+                  mt={1}
+                  p={2}
+                  border="1px"
+                  borderColor="gray.200"
+                  rounded="md"
+                  w="full"
+              />
+          </FormControl>
+
+          <FormControl mb={4}>
+              <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+              NO. of bathrooms
+              </FormLabel>
+              <Input
+                  name="ppt_showerroom"
+                  value={formData.ppt_showerroom}
+                  onChange={handleChange}
+                  mt={1}
+                  p={2}
+                  border="1px"
+                  borderColor="gray.200"
+                  rounded="md"
+                  w="full"
+              />
+          </FormControl>
+        </Flex>
+        
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            decoration
+            </FormLabel>
+            <Textarea
+              name="ppt_decoration"
+              value={formData.ppt_decoration}
+              onChange={handleChange}
+              mt={1}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              rounded="md"
+              w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            description
+            </FormLabel>
+            <Textarea
+              name="ppt_description"
+              value={formData.ppt_description}
+              onChange={handleChange}
+              mt={1}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              rounded="md"
+              w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            type of room
+            </FormLabel>
+            <Select
+                name="ppt_roomtype"
+                value={formData.ppt_roomtype}
+                onChange={handleChange}
+                mt={1}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            >
+            <option value="">Select Type</option>
+            <option value="Studio">Studio</option>
+            <option value="1 Bedroom">1 Bedroom</option>
+            <option value="1 Bedroom plus">1 Bedroom plus</option>
+            <option value="2 Bedroom">2 Bedroom</option>
+            <option value="Loft/Duplex">Loft/Duplex</option>
+            <option value="Penthouse">Penthouse</option>
+            {/* Add more options as needed */}
+            </Select>
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            optional description
+            </FormLabel>
+            <Textarea
+              name="ppt_optional_description"
+              value={formData.ppt_optional_description}
+              onChange={handleChange}
+              mt={1}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              rounded="md"
+              w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            view
+            </FormLabel>
+            <Textarea
+              name="ppt_view"
+              value={formData.ppt_view}
+              onChange={handleChange}
+              mt={1}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              rounded="md"
+              w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            pet friendly
+            </FormLabel>
+            <Select
+                name="ppt_petfriendly"
+                value={formData.ppt_petfriendly}
+                onChange={handleChange}
+                mt={1}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            >
+              <option value="">Select Type</option>
+              <option value="No Pets Allowed">No Pets Allowed</option>
+              <option value="With Restrictions">With Restrictions</option>
+              <option value="Pets Allowed">Pets Allowed</option>
+              <option value="Small Pets Allowed">Small Pets Allowed</option>
+            </Select>
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            Near By
+            </FormLabel>
+            <Textarea
+              name="ppt_nearby"
+              value={formData.ppt_nearby}
+              onChange={handleChange}
+              mt={1}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              rounded="md"
+              w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            Near By train
+            </FormLabel>
+            <Textarea
+              name="ppt_nearbytrain"
+              value={formData.ppt_nearbytrain}
+              onChange={handleChange}
+              mt={1}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              rounded="md"
+              w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            Amenities and facilities (separate with , pls)
+            </FormLabel>
+            <Textarea
+              name="ppt_facilities"
+              value={formData.ppt_facilities}
+              onChange={handleChange}
+              mt={1}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              rounded="md"
+              w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4} w={{base: 'full', lg: '65%'}}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            selling price
+            </FormLabel>
+            <Flex>
+              <Input
+                name="ppt_selling_price"
+                value={formData.ppt_selling_price}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+              />
+              <Box pl={1} my="auto"> THB </Box>
+
+            </Flex>
+            
+        </FormControl>
+
+        <FormControl mb={4} w={{base: 'full', lg: '50%'}}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            rental price
+            </FormLabel>
+            <Flex>
+              <Input
+                  name="ppt_rental_price"
+                  value={formData.ppt_rental_price}
+                  onChange={handleChange}
+                  mt={1}
+                  p={2}
+                  border="1px"
+                  borderColor="gray.200"
+                  rounded="md"
+                  w="full"
+              />
+              <Box pl={1} my="auto"> THB/Month </Box>
+            </Flex>
+        </FormControl>
+
+        <Flex >
+          <FormControl mb={4} mr={2} w='75%' >
+              <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+              partner name
+              </FormLabel>
+              <Input
+                  name="partner_name"
+                  value={formData.partner_name}
+                  onChange={handleChange}
+                  mt={1}
+                  p={2}
+                  border="1px"
+                  borderColor="gray.200"
+                  rounded="md"
+                  w="full"
+              />
+          </FormControl>
+
+          <FormControl mb={4} w='25%' alignSelf='end'>
+            <Select
+                name="partner_type"
+                value={formData.partner_type}
+                onChange={handleChange}
+                mt={6}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            >
+              <option value="">Select Type</option>
+              <option value="Agent">Agent</option>
+              <option value="Owner">Owner</option>
+            </Select>
+          </FormControl>
+        </Flex>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            partner phone number
+            </FormLabel>
+            <Input
+                name="partner_number"
+                value={formData.partner_number}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            partner line
+            </FormLabel>
+            <Input
+                name="partner_line"
+                value={formData.partner_line}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            partner other contact
+            </FormLabel>
+            <Input
+                name="partner_mail"
+                value={formData.partner_mail}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            tranfer fee
+            </FormLabel>
+            <Input
+                name="tranfer_fee"
+                value={formData.tranfer_fee}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            notes
+            </FormLabel>
+            <Textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              mt={1}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              rounded="md"
+              w="full"
+            />
+        </FormControl>
+        
+        
+        <Flex  w='100%' justify='end'>
+          <Button
+            type="submit"
+            colorScheme="blue"
+            mt={4}
+            isLoading={loading}
+            justify='end'
+          >
+            {loading ? "Submitting..." : "Submit"}
+          </Button>
+        </Flex>
       </form>
     </Box>
   );
