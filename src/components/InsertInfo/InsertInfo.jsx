@@ -1,0 +1,729 @@
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  Text,
+  Textarea,
+  Grid,
+  Image,
+  Flex,
+} from "@chakra-ui/react";
+import React, { useState } from "react";
+import { BsEmojiSmile } from "react-icons/bs";
+
+const InsertInfo = () => {
+  const [loading, setLoading] = useState(false);
+  const [allData, setAllData] = useState("");
+
+  const [formData, setFormData] = useState({
+    unit_code: "",
+    primary_area: "",
+    area_soi: "",
+    ppt_title: "",
+    ppt_type: "",
+    ppt_location_detail: "",
+    ppt_assets_name: "",
+    ppt_room_number: "",
+    ppt_floor_unit: "",
+    ppt_tower_unit: "",
+    ppt_direction: "",
+    ppt_selling_price: "",
+    ppt_rental_price: "",
+    ppt_size: "",
+    ppt_decoration: "",
+    ppt_nearby: [],
+    ppt_nearbytrain: [],
+    ppt_facilities: [],
+    ppt_description: "",
+    ppt_room_description: "",
+    ppt_optional_description: "",
+    ppt_bedroom: "",
+    ppt_roomtype: "",
+    ppt_showerroom: "",
+    ppt_view: "",
+    ppt_petfriendly: "",
+    ppt_media: [],
+    mainImageIndex: null,
+    partner_name: "",
+    partner_type: "",
+    partner_line: "",
+    partner_mail: "",
+    partner_number: "",
+    tranfer_fee: "",
+    ppt_writer: 1,
+    notes: "",
+  });
+
+  const parsePropertyData = (e) => {
+    const { value } = e.target;
+    setAllData(value);
+    // Split the input by "**" to separate each property listing
+    const listings = value.split("**");
+
+    // Remove empty strings from the array
+    const filteredListings = listings.filter(
+      (listing) => listing.trim() !== ""
+    );
+
+    filteredListings.forEach((listing) => {
+      const lines = listing.split("\n");
+
+      const property = {
+        ...formData,
+      };
+
+      property.ppt_title = lines[0].trim();
+      let locationFilled = false;
+      let sizeFilled = false;
+      let roomFilled = false;
+      let nameFilled = false;
+      let towerFilled = false;
+      let floorFilled = false;
+
+      lines.forEach((line) => {
+        const lowercasedLine = line.toLowerCase(); // Convert to lowercase
+
+        if (lowercasedLine.includes("location") && !locationFilled) {
+          property.ppt_location_detail = (line.split(":")[1] || "").trim();
+          locationFilled = true;
+        } else if (
+          lowercasedLine.includes("unit no") ||
+          lowercasedLine.includes("room no")
+        ) {
+          property.ppt_room_number = (line.split(":")[1] || "").trim();
+        } else if (
+          lowercasedLine.includes("soravee") ||
+          lowercasedLine.includes("997456415") ||
+          lowercasedLine.includes("997456145") ||
+          lowercasedLine.includes("992264998") ||
+          lowercasedLine.includes("zillionassets")
+        ) {
+          // Skip processing for this line
+        } else if (
+          (line.includes("Condo") || line.includes("House")) &&
+          !nameFilled
+        ) {
+          property.ppt_assets_name = (line.split(":")[1] || "").trim();
+          property.ppt_type = line.split(":")[0].replace(" ", "");
+          if (property.ppt_assets_name !== "") nameFilled = true;
+        } else if (
+          lowercasedLine.includes("room no") ||
+          lowercasedLine.includes("Room no.")
+        ) {
+          property.ppt_room_number = (line.split(":")[1] || "").trim();
+        } else if (lowercasedLine.includes("floor") && !floorFilled) {
+          property.ppt_floor_unit = (line.split(":")[1] || "").trim();
+          floorFilled = true;
+        } else if (
+          (lowercasedLine.includes("building") ||
+            lowercasedLine.includes("tower")) &&
+          !towerFilled
+        ) {
+          property.ppt_tower_unit = (line.split(":")[1] || "").trim();
+          towerFilled = true;
+        } else if (lowercasedLine.includes("facing")) {
+          property.ppt_direction = (line.split(":")[1] || "").trim();
+        } else if (lowercasedLine.includes("size") && !sizeFilled) {
+          property.ppt_size = parseFloat(
+            line.split(":")[1].trim().replace("SQM", "")
+          );
+          sizeFilled = true;
+        } else if (lowercasedLine.includes("room") && !roomFilled) {
+          property.ppt_room_description = (line.split(":")[1] || "").trim();
+          const bedroomMatch =
+            property.ppt_room_description.match(/(\d+)\s*Bedroom/i);
+          const bathroomMatch =
+            property.ppt_room_description.match(/(\d+)\s*Bathroom/i);
+          property.ppt_bedroom = bedroomMatch ? bedroomMatch[1] : "";
+          property.ppt_showerroom = bathroomMatch ? bathroomMatch[1] : "";
+          if (property.ppt_room_description !== "") roomFilled = true;
+        } else if (
+          lowercasedLine.includes("rental") ||
+          lowercasedLine.includes("rantal")
+        ) {
+          property.ppt_rental_price = line
+            .split(":")[1]
+            .trim()
+            .replace("THB/Month", "")
+            .replace("THB / Month", "");
+        } else if (
+          lowercasedLine.includes("amenities") ||
+          lowercasedLine.includes("facilities")
+        ) {
+          property.ppt_facilities = (line.split(":")[1] || "")
+            .trim()
+            .split(",");
+        } else if (line.includes("MRT") || line.includes("BTS")) {
+          property.ppt_nearbytrain = line.trim().replace("✅ ", "");
+        } else if (lowercasedLine.includes("near")) {
+          property.ppt_nearby = (line.split(":")[1] || "").trim().split(",");
+        } else if (
+          lowercasedLine.includes("finished") ||
+          lowercasedLine.includes("decorated") ||
+          lowercasedLine.includes("ready to move in")
+        ) {
+          property.ppt_decoration = line.trim().replace("✅", "");
+        } else if (lowercasedLine.includes("selling")) {
+          property.ppt_selling_price = line
+            .split(":")[1]
+            .trim()
+            .replace("THB", "");
+        } else if (lowercasedLine.includes("view")) {
+          property.ppt_view = line.trim().replace("✅ ", "");
+        } else if (
+          lowercasedLine.includes("ocr") ||
+          lowercasedLine.includes("acr")
+        ) {
+          const [key, value] = line.split(":");
+          property.partner_name = value.trim() || "";
+          property.partner_type = key.trim().includes("ACr")
+            ? "Agent"
+            : "Owner";
+        } else if (
+          lowercasedLine.includes("mb/line") ||
+          lowercasedLine.includes("mb / line")
+        ) {
+          let contact = (line.split(":")[1] || "").trim();
+          property.partner_number = contact;
+          property.partner_line = contact;
+        } else if (
+          lowercasedLine.includes("line") ||
+          lowercasedLine.includes("lind")
+        ) {
+          property.partner_line = (line.split(":")[1] || "").trim();
+        } else if (lowercasedLine.includes("email")) {
+          property.partner_mail = (line.split(":")[1] || "").trim();
+        } else if (lowercasedLine.includes("fb :")) {
+          property.partner_mail = line.trim();
+        } else if (lowercasedLine.includes("transfer fee")) {
+          property.tranfer_fee = line.trim();
+        } else if (
+          lowercasedLine.includes("mb") ||
+          lowercasedLine.includes("tel") ||
+          lowercasedLine.includes("mobile") ||
+          lowercasedLine.includes("phone")
+        ) {
+          property.partner_number = (line.split(":")[1] || "").trim();
+        } else if (lowercasedLine.includes("tel 0")) {
+          property.tranfer_fee = line.trim().replace("tel ", "");
+        }
+      });
+
+      // Update the form data with the values from the parsed property data
+      setFormData((prevData) => ({
+        ...prevData,
+        ...property,
+      }));
+    });
+  };
+
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+    if (name === "ppt_title") {
+      try {
+        const sanitizedValue = value.replace(/\s+/g, " ");
+
+        setFormData((prevData) => ({
+          ...prevData,
+          ppt_title: sanitizedValue,
+        }));
+
+        const response = await fetch(
+          `${config.apiUrl}zillionassets/en/insert-asset/auto-fill/${sanitizedValue}`
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          // Update the form data with the fetched data
+          setFormData((prevData) => ({
+            ...prevData,
+            primary_area: data.primary_area || "",
+            area_soi: data.area_soi || "",
+            ppt_type: data.ppt_type || "",
+            ppt_location_detail: data.ppt_location_detail || "",
+            ppt_assets_name: data.ppt_assets_name || "",
+            ppt_size: data.ppt_size || "",
+            ppt_decoration: data.ppt_decoration || "",
+            ppt_nearby: data.ppt_nearby ? data.ppt_nearby : [],
+            ppt_nearbytrain: data.ppt_nearbytrain ? data.ppt_nearbytrain : [],
+            ppt_facilities: data.ppt_facilities ? data.ppt_facilities : [],
+            ppt_room_description: data.ppt_room_description || "",
+            ppt_bedroom: data.ppt_bedroom || "",
+            ppt_roomtype: data.ppt_roomtype || "",
+            ppt_showerroom: data.ppt_showerroom || "",
+            ppt_petfriendly: data.ppt_petfriendly || "",
+          }));
+        } else {
+          console.error("Error fetching data:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    if (name === "area_soi") {
+      // Use regular expression to find the primary area
+      const primaryAreaMatch = value.match(/^(.*?)(?:\s+\d|$)/);
+
+      // Update the 'primary_area' field if a match is found
+      setFormData((prevData) => ({
+        ...prevData,
+        primary_area: primaryAreaMatch ? primaryAreaMatch[1].trim() : "",
+      }));
+    }
+    // Check if the updated field is 'ppt_room_description'
+    if (name === "ppt_room_description") {
+      // Use regular expression to find numbers followed by 'Bedroom' or 'Bathroom'
+      const bedroomMatch = value.match(/(\d+)\s*Bedroom/i);
+      const bathroomMatch = value.match(/(\d+)\s*Bathroom/i);
+
+      // Update the 'ppt_bedroom' and 'ppt_showerroom' fields if matches are found
+      setFormData((prevData) => ({
+        ...prevData,
+        ppt_bedroom: bedroomMatch ? bedroomMatch[1] : "",
+        ppt_showerroom: bathroomMatch ? bathroomMatch[1] : "",
+      }));
+    }
+  };
+
+  const handleMediaChange = (e) => {
+    const files = e.target.files;
+    setFormData((prevData) => ({
+      ...prevData,
+      ppt_media: [...prevData.ppt_media, ...files],
+    }));
+  };
+
+  const formatPrice = (value) => {
+    // Ensure value is a string
+    const stringValue = String(value);
+
+    const numericValue = parseFloat(stringValue.replace(/[^0-9.]/g, ""));
+    if (!isNaN(numericValue)) {
+      const formattedPrice = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(numericValue);
+      return formattedPrice;
+    }
+    return stringValue;
+  };
+
+  const handleRemoveMedia = (index) => {
+    setFormData((prevData) => {
+      const updatedMedia = [...prevData.ppt_media];
+      updatedMedia.splice(index, 1); // Remove the image at the specified index
+      return {
+        ...prevData,
+        ppt_media: updatedMedia,
+      };
+    });
+  };
+
+  const handleSelectMainImage = (index) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      mainImageIndex: index,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (loading) {
+      return;
+    }
+
+    // Validation checks
+    if (!formData.ppt_title) {
+      alert("Please enter card title");
+      return;
+    }
+
+    if (!formData.ppt_type) {
+      alert("Please select Assets Type");
+      return;
+    }
+
+    if (!formData.ppt_assets_name) {
+      const confirmed = window.confirm(
+        "assets name is empty. Do you want to save without it?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    if (!formData.ppt_media.length) {
+      alert("Please upload at least one image");
+      return;
+    }
+
+    if (formData.mainImageIndex === null) {
+      alert("Please select a main image");
+      return;
+    }
+
+    if (!formData.ppt_floor_unit) {
+      const confirmed = window.confirm(
+        "Floor unit is empty. Do you want to save without it?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    if (!formData.ppt_size) {
+      const confirmed = window.confirm(
+        "size is empty. Do you want to save without it?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    if (!formData.ppt_location_detail) {
+      const confirmed = window.confirm(
+        "Location detail is empty. Do you want to proceed without it?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    if (!formData.ppt_selling_price && !formData.ppt_rental_price) {
+      alert("Please enter selling price or rental price");
+      return;
+    }
+
+    if (
+      !(
+        formData.partner_number ||
+        formData.partner_line ||
+        formData.partner_mail
+      ) &&
+      formData.partner_name
+    ) {
+      const confirmed = window.confirm(
+        "Are you sure to not enter the contact partner"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    if (
+      (formData.partner_name ||
+        formData.partner_line ||
+        formData.partner_number ||
+        formData.partner_mail) &&
+      !formData.partner_type
+    ) {
+      alert("Please select the partner type");
+      return;
+    }
+
+    if (
+      !formData.partner_name &&
+      !formData.partner_line &&
+      !formData.partner_number &&
+      !formData.partner_mail
+    ) {
+      let confirmed = window.confirm(
+        "Info about the partner is empty, idk know who I need to contact with. Do you want to proceed without it?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+      confirmed = window.confirm(
+        "Are you sure to not enter info about the partner"
+      );
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    try {
+      setLoading(true);
+      // Use a different variable name, e.g., formDataToSend
+      const formDataToSend = new FormData();
+
+      // Append all fields from the state formData to formDataToSend
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+
+      // Append each file in ppt_image array to formDataToSend
+      formData.ppt_media.forEach((file, index) => {
+        const fileType = file.type.startsWith("image/")
+          ? "image"
+          : file.type.startsWith("video/")
+          ? "video"
+          : "other";
+
+        formDataToSend.append(
+          `ppt_media[]`,
+          file,
+          `ppt_media_${fileType}_${index}.${file.name.split(".").pop()}`
+        );
+      });
+
+      const response = await fetch(
+        `${config.apiUrl}zillionassets/en/insert-asset`,
+        {
+          method: "POST",
+          body: formDataToSend,
+        }
+      );
+
+      if (response.ok) {
+        alert("Form submitted successfully!");
+        setFormData({
+          unit_code: "",
+          primary_area: "",
+          area_soi: "",
+          ppt_title: "",
+          ppt_type: "",
+          ppt_location_detail: "",
+          ppt_assets_name: "",
+          ppt_room_number: "",
+          ppt_floor_unit: "",
+          ppt_tower_unit: "",
+          ppt_direction: "",
+          ppt_selling_price: "",
+          ppt_rental_price: "",
+          ppt_size: "",
+          ppt_decoration: "",
+          ppt_nearby: [],
+          ppt_nearbytrain: [],
+          ppt_facilities: [],
+          ppt_description: "",
+          ppt_room_description: "",
+          ppt_optional_description: "",
+          ppt_bedroom: "",
+          ppt_roomtype: "",
+          ppt_showerroom: "",
+          ppt_view: "",
+          ppt_petfriendly: "",
+          ppt_media: [],
+          mainImageIndex: null,
+          partner_name: "",
+          partner_type: "",
+          partner_line: "",
+          partner_mail: "",
+          partner_number: "",
+          tranfer_fee: "",
+          ppt_writer: 1,
+          notes: "",
+        });
+        setAllData("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        const errorResponse = await response.json();
+        alert(`Error submitting form: ${errorResponse.error}`);
+        console.error("Error submitting form:", errorResponse.error);
+      }
+    } catch (error) {
+      alert("Error submitting form2:", error);
+      console.error("Error submitting form:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <Box>
+      <Text textAlign='center' fontSize="lg" fontWeight="medium" color="gray.700" my={4}>
+        Insert Asset
+      </Text>
+      <form onSubmit={handleSubmit} style={{ marginLeft: "4rem" }}>
+        <FormControl mb={4}>
+          <FormLabel htmlFor="ppt_media" fontSize="sm" fontWeight="medium" color="gray.700">
+            Upload Images and Videos
+          </FormLabel>
+          <Input
+            type="file"
+            id="ppt_media"
+            name="ppt_media"
+            onChange={handleMediaChange}
+            accept="image/*,video/*,.zip"
+            multiple
+            mt={1}
+            p={2}
+            border="1px"
+            borderColor="gray.200"
+            rounded="md"
+            w="full"
+          />
+          <Box mt={2}>
+            {formData.ppt_media.map((file, index) => (
+              <Box
+                key={index}
+                className="mr-2 px-2 flex items-center border rounded-lg"
+              >
+                <span>{file.name}</span>
+                <Button
+                _hover={{bgColor:'red',color:'white'}}
+                  type="button"
+                  bgColor='white'
+                  color="red"
+                  ml={2}
+                  onClick={() => handleRemoveMedia(index)}
+                >
+                  X
+                </Button>
+              </Box>
+            ))}
+          </Box>
+        </FormControl>
+        {formData.ppt_media.length !== 0 ? (
+            <Box mb={4}>
+                <FormLabel htmlFor="mainImage" mb={2} fontSize="sm" fontWeight="medium" color="gray.700">
+                Select Main Image
+                </FormLabel>
+                <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+                {formData.ppt_media.map((file, index) => (
+                    <Box
+                    key={index}
+                    position="relative"
+                    cursor="pointer"
+                    onClick={() => handleSelectMainImage(index)}
+                    >
+                    {formData.mainImageIndex === index && (
+                    <Flex
+                        w='full'
+                        h='full'
+                        position="absolute"
+                        alignItems="center"
+                        justifyContent="center"
+                        bg="rgba(0, 0, 255, 0.50)"
+                        color="white"
+                        rounded="md"
+                    >
+                        Main Image
+                    </Flex>
+                    )}
+                    <Image
+                        src={URL.createObjectURL(file)}
+                        alt={`Img ${index}`}
+                        w="full"
+                        h="32"
+                        objectFit="cover"
+                        rounded="md"
+                    />
+                    
+                    </Box>
+                ))}
+                </Grid>
+            </Box>
+            ) : (
+            <Box></Box>
+        )}
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            Give me help you fill data
+            </FormLabel>
+            <Textarea
+            name="allData"
+            value={allData}
+            onChange={parsePropertyData}
+            mt={1}
+            p={2}
+            border="1px"
+            borderColor="gray.200"
+            rounded="md"
+            w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            Card Title
+            </FormLabel>
+            <Input
+                name="ppt_title"
+                value={formData.ppt_title}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            Assets Code
+            </FormLabel>
+            <Input
+                name="unit_code"
+                value={formData.unit_code}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            />
+        </FormControl>
+
+        <FormControl mb={4}>
+            <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
+            Assets Type
+            </FormLabel>
+            <Select
+                name="ppt_type"
+                value={formData.ppt_type}
+                onChange={handleChange}
+                mt={1}
+                p={2}
+                border="1px"
+                borderColor="gray.200"
+                rounded="md"
+                w="full"
+            >
+            <option value="">Select Type</option>
+            <option value="Condo">Condo</option>
+            <option value="Hotel/Apartment">Hotel/Apartment</option>
+            <option value="House/Office">House/Office</option>
+            <option value="Town House">Town House</option>
+            <option value="2 Storey Single House">2 Storey Single House</option>
+            <option value="3 Storey Single House">3 Storey Single House</option>
+            <option value="Commercial Building">Commercial Building</option>
+            <option value="etc.">etc.</option>
+            {/* Add more options as needed */}
+            </Select>
+        </FormControl>
+
+        <Button
+          type="submit"
+          colorScheme="blue"
+          float="right"
+          mt={4}
+          isLoading={loading}
+        >
+          {loading ? "Submitting..." : "Submit"}
+        </Button>
+      </form>
+    </Box>
+  );
+};
+
+export default InsertInfo;

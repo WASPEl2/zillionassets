@@ -24,39 +24,56 @@ export const theme = extendTheme({
   components: {
     Button: {
       defaultProps: {
-        colorScheme: 'emerald', // default is gray
-      }
+        colorScheme: 'emerald.700',
+      },
+      variants: {
+        solid: {
+          bg: 'emerald.700',
+          color: 'white',
+          _hover: {
+            bg: 'emerald.800',
+          },
+        },
+        outline: {
+          border: '1px solid',
+          borderColor: 'emerald.700',
+          color: 'emerald.700',
+          _hover: {
+            bg: 'emerald.50',
+          },
+        },
+      },
     },
     Input:{
       defaultProps: {
-        focusBorderColor: 'emerald.500'
+        focusBorderColor: 'emerald.800'
       }
     },
     Select:{
       baseStyle: {
         _focus: {
-          borderColor: 'emerald.500'
+          borderColor: 'emerald.900'
         }
       }
     },
     Textarea:{
       defaultProps: {
-        focusBorderColor: 'emerald.500'
+        focusBorderColor: 'emerald.950'
       }
     }
   },
   colors: {
     emerald: {
-      50: 'rgb(236 253 245)',
-      100: 'rgb(209 250 229)',
-      200: 'rgb(167 243 208)',
-      300: 'rgb(110 231 183)',
-      400: 'rgb(52 211 153)',
-      500: 'rgb(16 185 129)',
-      600: 'rgb(5 150 105)',
-      700: 'rgb(4 120 87)',
-      800: 'rgb(6 95 70)',
-      900: 'rgb(6 78 59)',
+      // 200: '#b5fddf',
+      // 300: '#7bfac7',
+      // 400: '#3beda7',
+      // 500: '#12d589',
+      600: '#08b16f',
+      700: '#0a8b59',
+      800: '#0e6d49',
+      900: '#0e593e',
+      950: '#013825',
+
     },
   },
 });

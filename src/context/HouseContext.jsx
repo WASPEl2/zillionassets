@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useRef } from 'react';
+import { config } from "../data";
 
 export const HouseContext = createContext('');
 
@@ -26,8 +27,7 @@ const HouseProvider = ({ children }) => {
 
     const fetchData = async () => {
         if (!isLoading) {
-            // setProperties([])
-            console.log("Start", currentPage,totalPages)
+
             setIsLoading(true);
             
             try {
@@ -40,8 +40,7 @@ const HouseProvider = ({ children }) => {
                     limit,
                     page: currentPage,
                 });
-
-                const url = `http://127.0.0.1:5000/zillionassets/en/assets-detail?${queryParams}`;
+                const url = `${config.api}/zillionassets/en/assets-detail?${queryParams}`;
 
                 const response = await fetch(url);
                 const data = await response.json();
@@ -72,6 +71,7 @@ const HouseProvider = ({ children }) => {
             setPrimaryArea,
             setPrice,
             setType,
+            searchQuery,
             setSearchQuery,
             types,
             searchHandler,

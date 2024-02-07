@@ -14,7 +14,7 @@ const PropertyItem = ({ property }) => {
   return (
     <Flex justify='center' align='center'>
         <Stack justify='center' width="300px" bg="white" boxShadow="xl" borderRadius="xl" >
-          <Image src={`data:image/jpeg;base64,${property.image}`} h='170' objectFit='cover' alt='property' />
+          <Image src={`data:image/jpeg;base64,${property.image}`} h='170' objectFit='cover' alt='property' borderTopStartRadius="xl"/>
 
           <VStack px='4' align='left'>
               <Text fontSize="13px" color="grey">
@@ -32,14 +32,14 @@ const PropertyItem = ({ property }) => {
                 ? <>
                   {property.rental_price.toLocaleString()} 
                   <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                    THB/month
+                    &nbsp;THB/month
                   </span>
                 </>
                 : property.selling_price !== null
                 ? <>
                   {property.selling_price.toLocaleString()} 
                   <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                    THB
+                    &nbsp;THB
                   </span>
                 </>
                 : "n/a"}{" "}

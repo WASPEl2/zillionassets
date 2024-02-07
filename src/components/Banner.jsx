@@ -22,7 +22,7 @@ const Banner = () => {
           flexGrow='1'
           px={{ sm: "6", md: "10" }}
           py={{ sm: '8',  md: "16" }}
-          bg="emerald.100"
+          bg="emerald.700"
           justify="center"
           align="left"
           borderRadius="xl"
@@ -35,19 +35,20 @@ const Banner = () => {
             fugit illo? Delectus, voluptas unde quae cupiditate at amet beatae
             totam!
           </Text>
-          <Box pt="3" pb="8">
-            <Button>Get Started</Button>
+          <Box pt="3" pb="8" >
+            <Button bg="emerald.900">Get Started</Button>
           </Box>
 
-          <HStack spacing="3">
+          <HStack spacing="3" >
             {bannerData.map((item, index) => (
               <VStack
                 key={index}
-                bg="emerald.200"
+                bg="emerald.800"
                 p="4"
                 borderRadius="md"
                 align="left"
                 pr="3"
+                color='white'
               >
                 <HStack>
                   <Text fontSize={{sm: '14px', md: 'md'}} fontWeight="extrabold" mr="-2">

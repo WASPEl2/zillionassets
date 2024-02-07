@@ -1,11 +1,39 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Box, Icon, Flex, Image } from '@chakra-ui/react';
-import { FaArrowAltCircleLeft, FaArrowAltCircleRight } from 'react-icons/fa';
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import styles from './SingleProperty.module.css';
 
 const ImageScrollbar = ({ data }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const containerRef = useRef(null);
+
+  useEffect(() => {
+      const handleWheel = (event) => {
+          if (containerRef.current && containerRef.current.contains(event.target)) {
+              event.preventDefault();
+
+              // Calculate the direction of the scroll
+              const scrollDirection = Math.sign(event.deltaY);
+
+              // Adjust the current image index based on the scroll direction
+              const newIndex = Math.min(
+                Math.max(currentImageIndex + scrollDirection, 0),
+                data.length - 1
+              );
+
+              // Scroll to the new index
+              scrollToIndex(newIndex);
+          }
+      };
+
+      if (containerRef.current) {
+          containerRef.current.addEventListener('wheel', handleWheel);
+
+          // return () => {
+          //     containerRef.current.removeEventListener('wheel', handleWheel);
+          // };
+      }
+  }, [currentImageIndex]);
 
   const scrollToIndex = (index) => {
     const imageWidth = containerRef.current.children[0].offsetWidth;
@@ -37,7 +65,7 @@ const ImageScrollbar = ({ data }) => {
         onClick={scrollPrev}
         cursor="pointer"
       >
-        <Icon as={FaArrowAltCircleLeft} fontSize="2xl" />
+        <Icon as={FiChevronLeft} fontSize="4xl" />
       </Flex>
       <Box
         ref={containerRef}
@@ -45,7 +73,7 @@ const ImageScrollbar = ({ data }) => {
         overflowX="auto"
         overflowY="hidden"
         whiteSpace="nowrap"
-        width='65vw'
+        width={{base: 'full', lg: '65vw'}}
       >
         {data.map((item, index) => (
           <Box
@@ -74,8 +102,9 @@ const ImageScrollbar = ({ data }) => {
         marginLeft="1"
         onClick={scrollNext}
         cursor="pointer"
+        h='100%'
       >
-        <Icon as={FaArrowAltCircleRight} fontSize="2xl" />
+        <Icon as={FiChevronRight} fontSize="4xl" />
       </Flex>
     </Flex>
   );

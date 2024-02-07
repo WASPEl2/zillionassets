@@ -1,28 +1,65 @@
 import { useEffect, useState } from "react";
-import { Stack, VStack, Flex, Heading, Text, Box, HStack } from "@chakra-ui/react";
+import { Stack, VStack, Flex, Heading, Text, Box, HStack, Button } from "@chakra-ui/react";
 import { BiBed, BiBath, BiArea } from "react-icons/bi";
 import { useParams } from "react-router-dom";
 import ImageScrollbar from "./ImageScrollbar";
+import RecommendProperties from "./RecommendProperties";
+import { config } from "../../data";
+import Form from "./Form";
 
 const PropertyDetails = () => {
   const { propertyId } = useParams();
   const [imageData, setImageData] = useState([]);
   const [propertyData, setPropertyData] = useState(null);
+  const [recommendedProperties, setRecommendedProperties] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    const fetchImages = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:5000/zillionassets/en/assets-detail/${propertyId}`);
-        const data = await response.json();
-        setImageData(data.media_details);
-        setPropertyData(data.property_details);
+        // Fetch the first data
+        const response1 = await fetch(`${config.api}/zillionassets/en/assets-detail/${propertyId}`);
+        const data1 = await response1.json();
+        setImageData(data1.media_details);
+        setPropertyData(data1.property_details);
+
+        // Fetch the second data based on the first data
+        const queryParams = new URLSearchParams({
+          property_id: propertyId,
+          bedrooms: data1.property_details.ppt_bedroom,
+          primaryArea: data1.property_details.primary_area,
+          type: data1.property_details.ppt_type,
+          purpose: data1.property_details.ppt_saleorrent,
+          selling_price: data1.property_details.ppt_selling_price,
+          rental_price: data1.property_details.ppt_rental_price,
+        });
+
+        const url = `${config.api}/zillionassets/en/assets-recommended?${queryParams}`;
+        const response2 = await fetch(url);
+        const data2 = await response2.json();
+        setRecommendedProperties(data2.recommended_properties);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setIsLoading(false);
       }
     };
 
-    fetchImages();
+    fetchData();
   }, [propertyId]);
+
+
+  // Function to format the time
+  const formatTime = (timeString) => {
+    const dateTime = new Date(timeString);
+    const hours = dateTime.getHours().toString().padStart(2, '0');
+    const minutes = dateTime.getMinutes().toString().padStart(2, '0');
+    const day = dateTime.getDate().toString().padStart(2, '0');
+    const month = (dateTime.getMonth() + 1).toString().padStart(2, '0');
+    const year = dateTime.getFullYear();
+    return `${hours}:${minutes} ${day}/${month}/${year}`;
+  };
 
   return (
     <>
@@ -49,7 +86,7 @@ const PropertyDetails = () => {
             <>
               {propertyData.ppt_rental_price}
               <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                THB/month
+                &nbsp;THB/month
               </span>
             </>
           ) : (
@@ -61,7 +98,7 @@ const PropertyDetails = () => {
             <>
               {propertyData.ppt_selling_price}
               <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                THB
+                &nbsp;THB
               </span>
             </>
           ) : (
@@ -96,8 +133,10 @@ const PropertyDetails = () => {
             <Text fontSize='15px'>{propertyData.ppt_description}</Text>
             <Text fontSize='15px'>{propertyData.ppt_nearby}</Text>
             <Text fontSize='15px'>{propertyData.ppt_nearbytrain}</Text>
+            <Text fontSize='15px'>{propertyData.ppt_optional_description}</Text>
 
           </VStack>
+
         </Stack>
       
 
@@ -130,7 +169,7 @@ const PropertyDetails = () => {
             {propertyData.ppt_view && (
               <Flex
                 justifyContent="space-between"
-                w="100%"
+                w="400px"
                 borderBottom="1px"
                 borderColor="gray.100"
                 p="3"
@@ -142,7 +181,7 @@ const PropertyDetails = () => {
             {propertyData.ppt_petfriendly && (
               <Flex
                 justifyContent="space-between"
-                w="100%"
+                w="400px"
                 borderBottom="1px"
                 borderColor="gray.100"
                 p="3"
@@ -166,39 +205,85 @@ const PropertyDetails = () => {
           </Flex>
           <Box>
             {propertyData.ppt_facilities && propertyData.ppt_facilities.length > 0 && (
-              <Text fontSize="2xl" fontWeight="black" marginTop="5">
+              <Text fontSize="xl" fontWeight="black" marginTop="5">
                 Facilities and Amenities
               </Text>
             )}
             <Flex flexWrap="wrap">
-              {propertyData.ppt_facilities && propertyData.ppt_facilities.split(',').map((facility, index) => (
-                <Text
-                  key={index}
-                  fontWeight="bold"
-                  color="blue.400"
-                  fontSize="l"
-                  p="2"
-                  m="1"
-                  borderRadius="10"
-                  bg="gray.200"
-                >
-                  {facility}
-                </Text>
-              ))}
+              {propertyData.ppt_facilities && propertyData.ppt_facilities.split(',').map((facility, index) => {
+                const trimmedItem = facility.trim(); // Trim each facility item
+
+                // Check if trimmedItem is not an empty string
+                if (trimmedItem) {
+                  return (
+                    <Text
+                      key={index}
+                      fontWeight="bold"
+                      color="blue.400"
+                      fontSize="l"
+                      p="2"
+                      m="1"
+                      borderRadius="10"
+                      bg="gray.200"
+                    >
+                      {trimmedItem}
+                    </Text>
+                  );
+                }
+                return null; // Skip rendering for empty strings
+              })}
             </Flex>
+            
+
           </Box>
-          {propertyData.tranfer_fee && (
-              <Text fontSize="2xl" fontWeight="black" marginTop="5">
-                {propertyData.tranfer_fee}
-              </Text>
-          )}
-          <VStack mt='4vh' align='right' maxW='100%'>
+          <VStack my='4vh' align='right' maxW='100%'  borderBottom="2px" borderColor="gray.200">
             <Text fontSize="15px" align='right'>
               {propertyData.partner_type === 'Agent' ? 'Acr' : 'Ocr'} {propertyData.partner_name}
             </Text>
+            <Text mb='2vh' fontSize="15px" align='center'>
+              Last Update {formatTime(propertyData.update_time)}
+            </Text>
+            
+          </VStack>
+          {recommendedProperties.length != 0 ? <>
+          <Text fontSize="2xl" fontWeight="black">
+              Similar Properties In {propertyData.primary_area}
+          </Text>
+            
+          <RecommendProperties data={recommendedProperties} isLoading={isLoading}/>
+          </> : <></>}
+
+          <VStack
+            position="fixed"
+            bottom="4"
+            right="4"
+            spacing={4}
+          >
           </VStack>
         </>
       )}
+      <Box
+        position="fixed"
+        bottom="4"
+        right="4"
+        bg="white"
+        border='1px' borderColor='green.100' boxShadow='md' borderRadius={showForm ? "md" : "full"}
+      >
+        {showForm ?<></>:
+        <Button
+        bg="emerald.700"
+        color="white"
+        borderRadius="full"
+        onClick={() => setShowForm(!showForm)}
+        >
+          {showForm ? "Close" : "Contact Us"}
+        </Button>}
+        
+        {showForm && <Form setShowForm={setShowForm}/>}
+      </Box>
+
+        
+
     </>
   );
 };
