@@ -89,7 +89,7 @@ const Header = () => {
               </HStack>
             </>
           ) : (
-            <NavMobile />
+            <NavMobile openLoginModal={openLoginModal}/>
           )
         }
       </Flex>

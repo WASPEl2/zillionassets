@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { ButtonGroup, VStack, Input, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Button, IconButton, useDisclosure, Center } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
 
-const NavMobile = () => {
+const NavMobile = ({openLoginModal}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
   
@@ -28,8 +28,7 @@ const NavMobile = () => {
                                 <Button variant='link' key={item}>{item}</Button>
                             ))
                         }
-                        <Button size='sm' variant='solid'>Contact</Button>
-                        <Button size='sm' variant='outline'>Log in</Button>
+                        <Button size='sm' variant='outline' onClick={openLoginModal}>Log in</Button>
                     </VStack>
                 </DrawerBody>
             </DrawerContent>
