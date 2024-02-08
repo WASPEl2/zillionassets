@@ -78,8 +78,6 @@ const LoginFormContent = ({ handleTabChange, setIsLoginModalOpen, setIsLoggedIn 
           password,
         }),
         credentials: 'include',
-        withCredentials: true,
-        mode: 'cors',
       });
 
       if (response.ok) {
@@ -92,7 +90,8 @@ const LoginFormContent = ({ handleTabChange, setIsLoginModalOpen, setIsLoggedIn 
       } else if (response.status === 401) {
         setErrorMessage('Invalid email or password.');
       } else {
-        console.error('Failed to log in:', response.statusText);
+        const errorResponse = await response.json();
+        alert(`Error Login: ${errorResponse.error}`);
       }
     } catch (error) {
       console.error('Error logging in:', error.message);
@@ -194,15 +193,20 @@ const RegisterFormContent = ({handleTabChange}) => {
           email,
           password,
         }),
+
       });
 
       
-      if (response.status === 409) {
-        setEmailAlreadyUsed(true);
-      }
+      
       if (response.ok) {
         alert("Register successfully!");
         handleTabChange('login')
+      } 
+      else if (response.status === 409) {
+        setEmailAlreadyUsed(true);
+      }else {
+        const errorResponse = await response.json();
+        alert(`Error Login: ${errorResponse.error}`);
       }
 
     } catch (error) {
