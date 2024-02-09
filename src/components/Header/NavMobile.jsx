@@ -1,10 +1,12 @@
-import { useRef } from 'react';
+import { useRef, useContext  } from 'react';
+import { Link } from 'react-router-dom';
 
 import { ButtonGroup, VStack, Input, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Button, IconButton, useDisclosure, Center } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
 
-const NavMobile = ({openLoginModal}) => {
+const NavMobile = ({openLoginModal, userData, isLoggedIn, onLogout}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   const btnRef = useRef();
   
   return (
@@ -23,12 +25,25 @@ const NavMobile = ({openLoginModal}) => {
                 </Center>
                 <DrawerBody px='14' mt='4'>
                     <VStack as='nav' spacing='8' alignItems='left'>
-                        {
-                            ['Home', 'About Us'].map((item)=>(
-                                <Button variant='link' key={item}>{item}</Button>
-                            ))
-                        }
-                        <Button size='sm' variant='outline' onClick={openLoginModal}>Log in</Button>
+                        <Link to='/'>
+                            <Button variant='link' key='Home'>Home</Button>
+                        </Link>
+                        <Link to='/About-Us'>
+                            <Button variant='link' key='About Us'>About Us</Button>
+                        </Link>
+
+                        {userData && userData.role === 'Admin'? (
+                            <Link to="insert-info" >
+                                <Button bgColor='emerald.950' size='sm' variant='solid' >Insert info</Button>
+                            </Link>
+                            ) : (
+                            <></>
+                        )}
+                        {isLoggedIn ? (
+                            <Button size='sm' variant='outline' onClick={onLogout}>Logout</Button>
+                        ) : (
+                            <Button size='sm' variant='outline' onClick={openLoginModal}>Log in</Button>
+                        )}
                     </VStack>
                 </DrawerBody>
             </DrawerContent>

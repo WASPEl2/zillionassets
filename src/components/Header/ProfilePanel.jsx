@@ -1,49 +1,48 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { Button, Box, Text } from '@chakra-ui/react';
+import { useRef  } from 'react';
+import { Link } from 'react-router-dom';
+
+import { VStack, Drawer, Box, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Button, useDisclosure, Center, Text } from '@chakra-ui/react';
+import { FiMenu } from 'react-icons/fi';
+
 import profile from "../../assets/images/user.png";
-import { UserDataContext } from "../../context/UserDataContext";
 
-const ProfilePanel = ({ isOpen, onClose, onLogout }) => {
-  const { userData } = useContext(UserDataContext);
-  const panelRef = useRef(null);
+const ProfilePanel = ({ isLoggedIn, onLogout, userData}) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleClickOutside = (event) => {
-    if (panelRef.current && !panelRef.current.contains(event.target)) {
-      onClose();
-    }
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
+  const btnRef = useRef();
+  
   return (
-    <Box
-      ref={panelRef}
-      position="absolute"
-      right="px"
-      bg="white"
-      boxShadow="md"
-      borderRadius="md"
-      p="2"
-      display={isOpen ? 'block' : 'none'}
-    >
-      <Text fontSize='15px'>{userData.role}</Text>
-      <Text fontSize='15px'>{userData.email}</Text>
+    <>
+      <img src={profile} alt="Profile" style={{ width: '30px', height: '30px', cursor: 'pointer' }} onClick={onOpen} />
 
-      <Box mt="8">
-        <Button size='sm' variant='outline' onClick={onLogout}>Logout</Button>
-      </Box>
-    </Box>
-  );
-};
+      <Drawer isOpen={isOpen} placement='right' onClose={onClose} finalFocusRef={btnRef}>
+          <DrawerOverlay />
+          <DrawerContent>
+              <DrawerCloseButton />
+              <Center>
+              <DrawerHeader>Profile</DrawerHeader>
+              </Center>
+              <DrawerBody px='14' mt='2' alignItems='center' justifyContent='center'>
+                  <Center>
+                    <img src={profile} alt="Profile" style={{ width: '60px', height: '60px', cursor: 'pointer' }}/>
+                    <Box ml='4'>
+                      <Text fontSize='15px'>{userData.role}</Text>
+                      <Text fontSize='15px'>{userData.email}</Text>
+                    </Box>
+                  </Center>
+                  <VStack as='nav' spacing='8' alignItems='left' >
 
-export default ProfilePanel;
+                      {isLoggedIn ? (
+                          <Button size='sm' variant='outline' mt='8' onClick={onLogout}>Logout</Button>
+                      ) : (
+                          <></>
+                      )}
+                  </VStack>
+              </DrawerBody>
+          </DrawerContent>
+      </Drawer>
+    </>
+  )
+}
+
+export default ProfilePanel

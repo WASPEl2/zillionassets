@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Stack, VStack, Flex, Heading, Text, Box, HStack, Button } from "@chakra-ui/react";
+import { Stack, VStack, Flex, Heading, Text, Box, HStack, Button, Spinner } from "@chakra-ui/react";
 import { BiBed, BiBath, BiArea } from "react-icons/bi";
 import { useParams } from "react-router-dom";
 import ImageScrollbar from "./ImageScrollbar";
@@ -12,42 +12,53 @@ const PropertyDetails = () => {
   const [imageData, setImageData] = useState([]);
   const [propertyData, setPropertyData] = useState(null);
   const [recommendedProperties, setRecommendedProperties] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        // Fetch the first data
-        const response1 = await fetch(`${config.api}/zillionassets/en/assets-detail/${propertyId}`);
-        const data1 = await response1.json();
-        setImageData(data1.media_details);
-        setPropertyData(data1.property_details);
+      if (!isLoading) {
+        setIsLoading(true)
+        try {
+          // Fetch the first data
+          const response1 = await fetch(`${config.api}/zillionassets/en/assets-detail/${propertyId}`);
+          const data1 = await response1.json();
+          setImageData(data1.media_details);
+          setPropertyData(data1.property_details);
+          setIsLoading(false);
 
-        // Fetch the second data based on the first data
-        const queryParams = new URLSearchParams({
-          property_id: propertyId,
-          bedrooms: data1.property_details.ppt_bedroom,
-          primaryArea: data1.property_details.primary_area,
-          type: data1.property_details.ppt_type,
-          purpose: data1.property_details.ppt_saleorrent,
-          selling_price: data1.property_details.ppt_selling_price,
-          rental_price: data1.property_details.ppt_rental_price,
-        });
+          // Fetch the second data based on the first data
+          const queryParams = new URLSearchParams({
+            property_id: propertyId,
+            bedrooms: data1.property_details.ppt_bedroom,
+            primaryArea: data1.property_details.primary_area,
+            type: data1.property_details.ppt_type,
+            purpose: data1.property_details.ppt_saleorrent,
+            selling_price: data1.property_details.ppt_selling_price,
+            rental_price: data1.property_details.ppt_rental_price,
+          });
 
-        const url = `${config.api}/zillionassets/en/assets-recommended?${queryParams}`;
-        const response2 = await fetch(url);
-        const data2 = await response2.json();
-        setRecommendedProperties(data2.recommended_properties);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setIsLoading(false);
+          const url = `${config.api}/zillionassets/en/assets-recommended?${queryParams}`;
+          const response2 = await fetch(url);
+          const data2 = await response2.json();
+          setRecommendedProperties(data2.recommended_properties);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          setIsLoading(false);
+        }
       }
     };
 
     fetchData();
   }, [propertyId]);
+
+  if (isLoading) {
+    return (
+      <Flex justify="center" align="center" h='80vh'>
+        <Spinner size="xl" color="emerald.800" />
+      </Flex>
+    );
+  }
 
 
   // Function to format the time
@@ -84,7 +95,7 @@ const PropertyDetails = () => {
         <Text mt="-1" fontWeight="extrabold" fontSize="18px" color="emerald.500">
           {propertyData.ppt_rental_price !== null ? (
             <>
-              {propertyData.ppt_rental_price}
+              {propertyData.ppt_rental_price.toLocaleString()}
               <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
                 &nbsp;THB/month
               </span>
@@ -96,7 +107,7 @@ const PropertyDetails = () => {
         <Text mt="-1" fontWeight="extrabold" fontSize="18px" color="emerald.500">
           {propertyData.ppt_selling_price !== null ? (
             <>
-              {propertyData.ppt_selling_price}
+              {propertyData.ppt_selling_price.toLocaleString()}
               <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
                 &nbsp;THB
               </span>
@@ -198,7 +209,7 @@ const PropertyDetails = () => {
                 borderColor="gray.100"
                 p="3"
               >
-                <Text>furnishing Status</Text>
+                <Text display={{ base: 'none', lg: 'block' }}>furnishing Status</Text>
                 <Text fontWeight="bold">{propertyData.ppt_decoration}</Text>
               </Flex>
             )}

@@ -8,16 +8,16 @@ const HouseProvider = ({ children }) => {
     const [properties, setProperties] = useState([]);
     const [primaryArea, setPrimaryArea] = useState('');
     const [primaryAreas, setPrimaryAreas] = useState([]);
-    const [price, setPrice] = useState('');
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
     const [type, setType] = useState('');
     const [types, setTypes] = useState([]);
+    const [purpose, setPurpose] = useState("RENT");
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1); 
     const [totalPages, setTotalPages] = useState(1);
 
-    const minPrice = 0;
-    const maxPrice = 10000000000; // 10,000,000,000
 
     const containerRef = useRef(null);
 
@@ -32,14 +32,17 @@ const HouseProvider = ({ children }) => {
             
             try {
                 const queryParams = new URLSearchParams({
-                    primaryArea,
-                    type,
-                    minPrice,
-                    maxPrice,
-                    searchQuery,
                     limit,
                     page: currentPage,
                 });
+
+                if (primaryArea) queryParams.append('primaryArea', primaryArea);
+                if (type) queryParams.append('type', type);
+                if (minPrice) queryParams.append('minPrice', minPrice);
+                if (maxPrice) queryParams.append('maxPrice', maxPrice);
+                if (purpose) queryParams.append('purpose', purpose);
+                if (searchQuery) queryParams.append('searchQuery', searchQuery);
+                
                 const url = `${config.api}/zillionassets/en/assets-detail?${queryParams}`;
 
                 const response = await fetch(url);
@@ -67,10 +70,13 @@ const HouseProvider = ({ children }) => {
         <HouseContext.Provider value={{
             properties,
             primaryAreas,
-            price,
             setPrimaryArea,
-            setPrice,
+            minPrice,
+            maxPrice,
+            setMinPrice,
+            setMaxPrice,
             setType,
+            setPurpose,
             searchQuery,
             setSearchQuery,
             types,

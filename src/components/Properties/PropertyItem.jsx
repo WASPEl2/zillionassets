@@ -26,20 +26,13 @@ const PropertyItem = ({ property }) => {
               </Heading>
 
               
-              <Text mt="-1" fontWeight="extrabold" fontSize="14px" color="emerald.500">
+              <Text mt="-1" fontWeight="extrabold" fontSize="14px" color="emerald.700">
               {" "}
-              {property.rental_price !== null
+              {property.price !== null
                 ? <>
-                  {property.rental_price.toLocaleString()} 
+                  {property.price?.toLocaleString()} 
                   <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                    &nbsp;THB/month
-                  </span>
-                </>
-                : property.selling_price !== null
-                ? <>
-                  {property.selling_price.toLocaleString()} 
-                  <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                    &nbsp;THB
+                    &nbsp;THB{property.saleorrent === "RENT" ? "/month":""}
                   </span>
                 </>
                 : "n/a"}{" "}

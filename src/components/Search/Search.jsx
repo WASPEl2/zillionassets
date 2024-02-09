@@ -5,6 +5,7 @@ import { HouseContext } from '../../context/HouseContext';
 import LocationFilter from "./LocationFilter";
 import PriceFilter from "./PriceFilter";
 import PropertyTypeFilter from "./PropertyTypeFilter";
+import PurposeFilter from './PurposeFilter';
 
 const Search = () => {
   const {inputQuery, setInputQuery} = useState("")
@@ -34,7 +35,7 @@ const Search = () => {
         <LocationFilter />
         <PropertyTypeFilter />
         <PriceFilter />
-        <PriceFilter/>
+        <PurposeFilter/>
       </Flex>
     </Flex>
   )

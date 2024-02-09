@@ -360,7 +360,12 @@ const InsertInfo = () => {
     }
 
     if (!formData.ppt_type) {
-      alert("Please select Assets Type");
+      alert("Please select Asset Type");
+      return;
+    }
+
+    if (!formData.primary_area) {
+      alert("Please inter primary area");
       return;
     }
 
@@ -384,7 +389,7 @@ const InsertInfo = () => {
       return;
     }
 
-    if (!formData.ppt_floor_unit) {
+    if (formData.ppt_type === "Condo" && !formData.ppt_floor_unit ) {
       const confirmed = window.confirm(
         "Floor unit is empty. Do you want to save without it?"
       );

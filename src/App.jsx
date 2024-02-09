@@ -14,7 +14,7 @@ const App = () => {
   return (
     <HouseProvider>
       <UserDataProvider>
-        <Container maxW='container.lg' px='6'>
+        <Container maxW='container.lg' minH='100vh' px='6'>
           <Header />
           <Routes>
             <Route path='/' element={<Home />} />
