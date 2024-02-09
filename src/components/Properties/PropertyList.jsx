@@ -1,5 +1,6 @@
-import { Center, Button, Grid, Heading, useBreakpointValue, Stack, Select } from '@chakra-ui/react';
+import { Center, Button, Grid, Heading, useBreakpointValue, Stack, Select, Flex, Spinner, Text, Box } from '@chakra-ui/react';
 import { useContext } from "react";
+import { keyframes } from '@emotion/react';
 import { Link } from 'react-router-dom';
 
 import { HouseContext } from "../../context/HouseContext";
@@ -104,15 +105,23 @@ const PropertyList = () => {
     }
 
     return (
-        <>
-            <Grid my='3' rowGap='4' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))'>
-                {properties.map((item, index) => (
-                    <Link to={`/property-details/${item.id}`} key={index}>
-                        <PropertyItem key={item.id} property={item} />
-                    </Link>
-                ))}
-            </Grid>
-
+        <>  {isLoading ?
+                <Flex justify="center" align="center" h='50vh'>
+                    <Spinner size="xl" color="emerald.800" />
+                    <Text>
+                        &nbsp;&nbsp;Loading properties data
+                    </Text>
+                </Flex>
+            : 
+                <Grid my='3' rowGap='4' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))'>
+                    {properties.map((item, index) => (
+                        <Link to={`/property-details/${item.id}`} key={index}>
+                            <PropertyItem key={item.id} property={item} />
+                        </Link>
+                    ))}
+                </Grid>
+            }
+            
             <Center>
                 <Button onClick={prevPage} disabled={currentPage === 1} size='sm' variant='outline'>
                     Previous Page
