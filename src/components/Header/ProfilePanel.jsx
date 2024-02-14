@@ -1,8 +1,6 @@
 import { useRef  } from 'react';
-import { Link } from 'react-router-dom';
 
 import { VStack, Drawer, Box, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Button, useDisclosure, Center, Text } from '@chakra-ui/react';
-import { FiMenu } from 'react-icons/fi';
 
 import profile from "../../assets/images/user.png";
 

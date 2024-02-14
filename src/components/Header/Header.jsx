@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect, useContext } from 'react';
-import { Flex, Heading, Box, Button, HStack, chakra, ButtonGroup, useBreakpointValue, Divider, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
+import React, { useState, useContext } from 'react';
+import { Flex, Heading, Box, Button, HStack, chakra, ButtonGroup, useBreakpointValue, Modal, ModalOverlay, ModalContent, } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import NavMobile from './NavMobile';
 import LoginForm from './Login';

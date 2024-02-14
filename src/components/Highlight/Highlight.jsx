@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { VStack, Box, Heading, Icon, Flex } from "@chakra-ui/react";
+import { Box, Heading, Icon, Flex } from "@chakra-ui/react";
 import { Link } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 

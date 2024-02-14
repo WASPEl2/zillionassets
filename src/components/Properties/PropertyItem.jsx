@@ -9,6 +9,7 @@ import {
   Text,
   Flex,
   IconButton,
+  Spinner,
 } from "@chakra-ui/react";
 import { config } from '../../data';
 import { UserDataContext } from "../../context/UserDataContext";
@@ -70,13 +71,19 @@ const PropertyItem = ({ property }) => {
     <Flex justify="center" align="center" pl='0'>
       <Stack width="300px" bg="white" boxShadow="xl" borderRadius="xl" position="relative">
         {/* Image */}
+        {isLoading ? 
+          <Flex justify="center" align="center" h="170" bgColor='gray.100'>
+            {/* <Spinner size="xl" color="emerald.800" /> */}
+            <Text>Finding image ...</Text>
+          </Flex>
+        :
         <Image
           src={imageData}
           h="170"
           objectFit="cover"
           alt="property"
           borderTopStartRadius="xl"
-        />
+        />}
 
         {/* Edit icon */}
         {userData && userData.role === 'Admin' && ( <Flex position="absolute" top="0" right="0" >

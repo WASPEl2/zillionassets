@@ -1,8 +1,31 @@
 import { Textarea, Image, VStack, HStack, Box, Text, Input, Button, Divider,CloseButton, IconButton } from '@chakra-ui/react';
-import { FaFacebook, FaLine, FaWhatsapp, FaEnvelope, FaPhone } from 'react-icons/fa'; // Example icons
+import { FaFacebook, FaLine, FaWhatsapp, FaEnvelope, FaPhone } from 'react-icons/fa';
 import logo from "../../assets/images/logo.jpg";
 
 const Form = ({ setShowForm }) => {
+  const handleFacebookMessage = () => {
+    window.open('https://m.me/ZillionAssets/', '_blank');
+  };
+
+  const handleLineCall = () => {
+    window.open('https://line.me/ti/p/%40zillionassets', '_blank');
+  };
+
+  const handleWhatsAppMessage = () => {
+    // Add logic to open WhatsApp with a pre-filled message
+    window.open('https://wa.me/66997456415', '_blank');
+  };
+
+  const handleEmail = () => {
+    // Add logic to open default email client with pre-filled email address
+    window.open('mailto:fon_sr@yahoo.com,soravee.zillionassets@gmail.com', '_blank');
+  };
+
+  const handleTelephoneCall = () => {
+    // Add logic to initiate a telephone call
+    window.open('tel:+66997456415');
+  };
+
   return (
     <VStack  px='5' py='6' pr='20'>
       <HStack spacing={4} >
@@ -20,8 +43,6 @@ const Form = ({ setShowForm }) => {
         <Text>MB/whatsapp: +66997456415</Text>
         <Text>E-mail: fon_sr@yahoo.com, </Text>
         <Text>        soravee.zillionassets@gmail.com </Text>
-
-        
         <Text>Line ID: @zillionassets</Text>
       </VStack>
       <Divider my={4} />
@@ -30,33 +51,33 @@ const Form = ({ setShowForm }) => {
           w='full' 
           aria-label='Send Message'
           icon={<FaFacebook />} 
-          onClick={() => {/* Add your Facebook message logic here */}} 
+          onClick={handleFacebookMessage} 
         />
         <IconButton 
           w={{ base: 'full', md: '50%' }} 
           aria-label='Call'
           variant='outline' 
           icon={<FaLine />} 
-          onClick={() => {/* Add your Line call logic here */}} 
+          onClick={handleLineCall} 
         />
         <IconButton 
           w='full' 
           aria-label='WhatsApp'
           icon={<FaWhatsapp />} 
-          onClick={() => {/* Add your WhatsApp message logic here */}} 
+          onClick={handleWhatsAppMessage} 
         />
         <IconButton 
           w={{ base: 'full', md: '50%' }} 
           aria-label='Email'
           variant='outline' 
           icon={<FaEnvelope />} 
-          onClick={() => {/* Add your email logic here */}} 
+          onClick={handleEmail} 
         />
         <IconButton 
           w='full' 
           aria-label='Telephone'
           icon={<FaPhone />} 
-          onClick={() => {/* Add your telephone call logic here */}} 
+          onClick={handleTelephoneCall} 
         />
       </HStack>
       <CloseButton 
