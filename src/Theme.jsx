@@ -1,4 +1,4 @@
-import { extendTheme, theme as base } from "@chakra-ui/react"
+import { extendTheme, theme as base } from "@chakra-ui/react";
 
 const breakpoints = {
   sm: '320px',
@@ -9,16 +9,16 @@ const breakpoints = {
 }
 
 export const theme = extendTheme({
-  breakpoints, 
+  breakpoints,
   fonts: {
     heading: `'Roboto Slab', ${base.fonts.heading}`,
     body: `'Montserrat', sans-serif`,
   },
   styles: {
     global: {
-        body: {
-            bg: 'white'
-        }
+      body: {
+        bg: 'white'
+      }
     }
   },
   components: {
@@ -44,19 +44,22 @@ export const theme = extendTheme({
         },
       },
     },
-    Input:{
+    Input: {
       defaultProps: {
         focusBorderColor: 'emerald.800'
       }
     },
-    Select:{
+    Select: {
       baseStyle: {
         _focus: {
           borderColor: 'emerald.900'
         }
-      }
+      },
+      defaultProps: {
+        focusBorderColor: 'emerald.900',
+      },
     },
-    Textarea:{
+    Textarea: {
       defaultProps: {
         focusBorderColor: 'emerald.950'
       }
@@ -64,7 +67,7 @@ export const theme = extendTheme({
   },
   colors: {
     emerald: {
-      // 200: '#b5fddf',
+      200: '#b5fddf',
       // 300: '#7bfac7',
       // 400: '#3beda7',
       // 500: '#12d589',
@@ -73,7 +76,6 @@ export const theme = extendTheme({
       800: '#0e6d49',
       900: '#0e593e',
       950: '#013825',
-
     },
   },
 });

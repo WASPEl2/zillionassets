@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <>
       <Banner />
-      {/* <Highlight/> */}
+      <Highlight/>
       <Search />
       <PropertyList />
     </>

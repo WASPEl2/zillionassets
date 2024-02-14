@@ -15,7 +15,7 @@ const Header = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showProfilePanel, setShowProfilePanel] = useState(false);
-  const { userData } = useContext(UserDataContext);
+  const { userData, setUserData } = useContext(UserDataContext);
 
   const openLoginModal = () => {
     setIsLoginModalOpen(true);
@@ -41,8 +41,15 @@ const Header = () => {
       if (response.status === 201) {
         setIsLoggedIn(false);
         setShowProfilePanel(false);
-      }  else {
-        console.error('Failed to log out:', response.statusText);
+        setUserData(null)
+      } else if (response.status === 400) {
+        setIsLoggedIn(false);
+        setShowProfilePanel(false);
+        setUserData(null)
+         alert(`Your are not logged in.`);
+      } else {
+        const errorResponse = await response.json();
+        alert(`Error Log out: ${errorResponse.error}`);
       }
     } catch (error) {
       console.error('Error logging in:', error.message);

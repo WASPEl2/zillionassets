@@ -1,38 +1,38 @@
 import { useState, useRef, useEffect } from 'react';
-import { Box, Icon, Flex, Image } from '@chakra-ui/react';
+import { Box, Icon, Flex, Image, Spinner,Text } from '@chakra-ui/react';
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import styles from './SingleProperty.module.css';
 
-const ImageScrollbar = ({ data }) => {
+const ImageScrollbar = ({ data, isLoading }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const containerRef = useRef(null);
 
   useEffect(() => {
-      const handleWheel = (event) => {
-          if (containerRef.current && containerRef.current.contains(event.target)) {
-              event.preventDefault();
+    const handleWheel = (event) => {
+      if (containerRef.current && containerRef.current.contains(event.target)) {
+        event.preventDefault();
 
-              // Calculate the direction of the scroll
-              const scrollDirection = Math.sign(event.deltaY);
+        // Calculate the direction of the scroll
+        const scrollDirection = Math.sign(event.deltaY);
 
-              // Adjust the current image index based on the scroll direction
-              const newIndex = Math.min(
-                Math.max(currentImageIndex + scrollDirection, 0),
-                data.length - 1
-              );
+        // Adjust the current image index based on the scroll direction
+        const newIndex = Math.min(
+          Math.max(currentImageIndex + scrollDirection, 0),
+          data.length - 1
+        );
 
-              // Scroll to the new index
-              scrollToIndex(newIndex);
-          }
-      };
-
-      if (containerRef.current) {
-          containerRef.current.addEventListener('wheel', handleWheel);
-
-          // return () => {
-          //     containerRef.current.removeEventListener('wheel', handleWheel);
-          // };
+        // Scroll to the new index
+        scrollToIndex(newIndex);
       }
+    };
+
+    if (containerRef.current) {
+      containerRef.current.addEventListener('wheel', handleWheel);
+
+      // return () => {
+      //   containerRef.current.removeEventListener('wheel', handleWheel);
+      // };
+    }
   }, [currentImageIndex]);
 
   const scrollToIndex = (index) => {
@@ -58,51 +58,61 @@ const ImageScrollbar = ({ data }) => {
   return (
     <Flex alignItems="center" justifyContent="center">
       <Flex
-        className={styles.arrow}
         justifyContent="center"
         alignItems="center"
         marginRight="1"
         onClick={scrollPrev}
         cursor="pointer"
+        opacity={currentImageIndex !== 0 ? 1 : 0}
+        visibility={currentImageIndex !== 0 ? 'visible' : 'hidden'}
+        transition="opacity 0.3s, visibility 0.3s"
       >
         <Icon as={FiChevronLeft} fontSize="4xl" />
       </Flex>
       <Box
         ref={containerRef}
         className={styles.imageContainer}
-        overflowX="auto"
-        overflowY="hidden"
+        overflowX={{ base: 'auto', xl: 'hidden' }}
         whiteSpace="nowrap"
-        width={{base: 'full', lg: '65vw'}}
+        width={{ base: 'full', xl: '65vw' }}
       >
-        {data.map((item, index) => (
-          <Box
-            key={index}
-            itemID={item.id}
-            overflow="hidden"
-            className={styles.images}
-            p="1"
-            marginRight="2"
-            display="inline-block"
-          >
-            <Image
-              alt="property"
-              src={`data:image/jpeg;base64,${item.media_data}`}
-              width='100%'
-              height='70vh'
-              objectFit="cover"
-            />
-          </Box>
-        ))}
+        {isLoading ? (
+          <Flex justify="center" align="center" height="70vh">
+            <Spinner size="xl" color="emerald.800" />
+            <Text>&nbsp;&nbsp;Finding properties image ...</Text>
+          </Flex>
+        ) : (
+          data.map((item, index) => (
+            <Box
+              key={index}
+              itemID={item.id}
+              overflow="hidden"
+              className={styles.images}
+              p="1"
+              marginRight="2"
+              display="inline-block"
+            >
+              <Image
+                alt="property"
+                src={`data:image/jpeg;base64,${item.media_data}`}
+                width='100%'
+                height='70vh'
+                objectFit="contain"
+              />
+            </Box>
+          ))
+        )}
       </Box>
       <Flex
-        className={styles.arrow}
         justifyContent="center"
         alignItems="center"
         marginLeft="1"
         onClick={scrollNext}
         cursor="pointer"
         h='100%'
+        opacity={currentImageIndex !== data.length - 1 ? 1 : 0}
+        visibility={currentImageIndex !== data.length - 1 ? 'visible' : 'hidden'}
+        transition="opacity 0.3s, visibility 0.3s"
       >
         <Icon as={FiChevronRight} fontSize="4xl" />
       </Flex>

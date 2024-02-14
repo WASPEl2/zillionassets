@@ -32,19 +32,25 @@ const RecommendProperties = ({ data, isLoading }) => {
         }
     }, []);
 
+    const handleLinkClick = () => {
+        // Scroll to the top of the page
+        window.scrollTo(0, 0);
+    };
+
     return (
         <Box
             px='2vw'
+            pb='6'
+            overflowX={{base:'auto',xl:'hidden'}}
             style={{
-                overflowX: 'auto',
                 display: 'flex',
                 flexDirection: 'row',
             }}
             ref={scrollRef}
         >
             {data.map((item, index) => (
-                <Link to={`/property-details/${item.id}`} key={index} style={{ marginRight: '10px' }}>
-                    <PropertyItem key={item.id} property={item} />
+                <Link to={`/property-details/${item.ppt_id}`} key={index} style={{ marginRight: '10px' }} onClick={() => window.scrollTo(0, 0)}>
+                    <PropertyItem key={item.ppt_id} property={item} />
                 </Link>
             ))}
         </Box>

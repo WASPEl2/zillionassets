@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext  } from 'react';
 import {
   VStack,
   Divider,
@@ -11,16 +11,16 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { config } from '../../data';
-import { UserDataContext } from "../../context/UserDataContext";
 import { Link  } from 'react-router-dom';
-
-
+import { UserDataContext } from "../../context/UserDataContext";
 import { BiBed, BiBath, BiArea, BiEdit } from "react-icons/bi";
 
-const PropertyItem = ({ property }) => {
+const HighlightItem = ({ property }) => {
   const [imageData, setImageData] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { userData } = useContext(UserDataContext);
+
+
 
   useEffect(() => {
     const fetchImageData = async () => {
@@ -32,7 +32,7 @@ const PropertyItem = ({ property }) => {
           imageUrl = property.mainimage;
         } else if (!isLoading){
           setIsLoading(true);
-
+          
           // Fetch the image data from the API endpoint
           const response = await fetch(`${config.api}/zillionassets/en/asset-main-image/${property.ppt_id}`);
           
@@ -53,6 +53,7 @@ const PropertyItem = ({ property }) => {
         setImageData(imageUrl);
       } catch (error) {
         console.error('Error fetching image:', error);
+        // Handle the error appropriately, e.g., show an error message to the user
       }
     };
 
@@ -90,6 +91,7 @@ const PropertyItem = ({ property }) => {
           </Link>
         </Flex>
         )}
+        
 
         <VStack px="4" align="left">
           <Text fontSize="13px" color="grey">
@@ -101,17 +103,17 @@ const PropertyItem = ({ property }) => {
           </Heading>
 
           <Text mt="-1" fontWeight="extrabold" fontSize="14px" color="emerald.700">
-              {" "}
-              {property.price !== null ? (
-                  <>
-                      {Number(property.price).toLocaleString()} {/* Format the price with thousands separators */}
-                      <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                          &nbsp;THB{property.ppt_saleorrent === "RENT" ? "/month" : ""}
-                      </span>
-                  </>
-              ) : (
-                  "n/a"
-              )}{" "}
+            {" "}
+            {property.price !== null ? (
+              <>
+                {property.price?.toLocaleString()}
+                <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
+                  &nbsp;THB{property.ppt_saleorrent === "RENT" ? "/month" : ""}
+                </span>
+              </>
+            ) : (
+              "n/a"
+            )}{" "}
           </Text>
 
           <Divider mt="2.5" />
@@ -139,4 +141,4 @@ const PropertyItem = ({ property }) => {
   );
 };
 
-export default PropertyItem;
+export default HighlightItem;

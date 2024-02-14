@@ -1,64 +1,60 @@
-import { useEffect, useState } from "react";
-import { Stack, VStack, Flex, Heading, Text, Box, HStack, Button, Spinner } from "@chakra-ui/react";
-import { BiBed, BiBath, BiArea } from "react-icons/bi";
-import { useParams } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { Stack, VStack, Flex, Heading, Text, Box, HStack, Button, Spinner, IconButton, } from "@chakra-ui/react";
+import { BiBed, BiBath, BiArea, BiEdit } from "react-icons/bi";
+import { useParams, Link  } from "react-router-dom";
+
+
+import { config } from "../../data";
 import ImageScrollbar from "./ImageScrollbar";
 import RecommendProperties from "./RecommendProperties";
-import { config } from "../../data";
+import { HouseContext } from "../../context/HouseContext";
+import { UserDataContext } from "../../context/UserDataContext";
 import Form from "./Form";
 
 const PropertyDetails = () => {
   const { propertyId } = useParams();
-  const [imageData, setImageData] = useState([]);
-  const [propertyData, setPropertyData] = useState(null);
+  const { userData } = useContext(UserDataContext);
+  const { getPropertyById, getRecommendedProperties } = useContext(HouseContext);
+  const propertyData = getPropertyById(propertyId);
   const [recommendedProperties, setRecommendedProperties] = useState([]);
+  const [imageData, setImageData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!isLoading) {
-        setIsLoading(true)
-        try {
-          // Fetch the first data
-          const response1 = await fetch(`${config.api}/zillionassets/en/assets-detail/${propertyId}`);
-          const data1 = await response1.json();
-          setImageData(data1.media_details);
-          setPropertyData(data1.property_details);
-          setIsLoading(false);
-
-          // Fetch the second data based on the first data
-          const queryParams = new URLSearchParams({
-            property_id: propertyId,
-            bedrooms: data1.property_details.ppt_bedroom,
-            primaryArea: data1.property_details.primary_area,
-            type: data1.property_details.ppt_type,
-            purpose: data1.property_details.ppt_saleorrent,
-            selling_price: data1.property_details.ppt_selling_price,
-            rental_price: data1.property_details.ppt_rental_price,
-          });
-
-          const url = `${config.api}/zillionassets/en/assets-recommended?${queryParams}`;
-          const response2 = await fetch(url);
-          const data2 = await response2.json();
-          setRecommendedProperties(data2.recommended_properties);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          setIsLoading(false);
-        }
+    const fetchImageData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`${config.api}/zillionassets/en/asset-image/${propertyId}`);
+        const images = await response.json();
+        setImageData(images);
+      } catch (error) {
+        console.error('Error fetching image data:', error);
+      } finally{
+        setIsLoading(false);
       }
     };
 
-    fetchData();
+    fetchImageData();
   }, [propertyId]);
 
-  if (isLoading) {
-    return (
-      <Flex justify="center" align="center" h='80vh'>
-        <Spinner size="xl" color="emerald.800" />
-      </Flex>
-    );
-  }
+  useEffect(() => {
+    const fetchRecommendedProperties = async () => {
+      if(propertyData){
+        try {
+          // Call the function to get recommended properties based on the current property ID
+          const recommendedProps = getRecommendedProperties(propertyId, propertyData.primary_area, propertyData.ppt_type, propertyData.ppt_bedroom, propertyData.price);
+          setRecommendedProperties(recommendedProps);
+        } catch (error) {
+          console.error('Error fetching recommended properties:', error);
+        }
+      };
+    }
+
+    fetchRecommendedProperties();
+        
+  }, [propertyData]);
+
 
 
   // Function to format the time
@@ -74,12 +70,26 @@ const PropertyDetails = () => {
 
   return (
     <>
-      <ImageScrollbar data={imageData} />
+      <ImageScrollbar data={imageData} isLoading={isLoading} />
       {propertyData && (
         <Stack direction={{ base: 'column', md: 'row' }} justify='space-between' align={{ md: 'center' }} my='2vh'>
           <Box>
-            <Heading fontSize='22px'>{propertyData.ppt_assets_name}</Heading>
+            <Flex>
+              <Heading fontSize='22px' mr='4'>{propertyData.ppt_assets_name}</Heading>
+              {userData && userData.role === 'Admin' && ( 
+                <Link to={`/insert-info/${propertyData.ppt_id}`}>
+                  <IconButton
+                    aria-label="Edit property"
+                    icon={<BiEdit />}
+                    size="sm"
+                    borderBottomLeftRadius="2xl"
+                  />
+                </Link>
+            
+              )}
+            </Flex>
             <Text fontSize='15px'>{propertyData.ppt_location_detail}</Text>
+            
           </Box>
 
           <HStack>
@@ -91,32 +101,19 @@ const PropertyDetails = () => {
       )}
 
       {propertyData && (
-        <>
-        <Text mt="-1" fontWeight="extrabold" fontSize="18px" color="emerald.500">
-          {propertyData.ppt_rental_price !== null ? (
-            <>
-              {propertyData.ppt_rental_price.toLocaleString()}
-              <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                &nbsp;THB/month
-              </span>
-            </>
+        <Text mt="-1" fontWeight="extrabold" fontSize="14px" color="emerald.700">
+          {" "}
+          {propertyData.price !== null ? (
+              <>
+                  {Number(propertyData.price).toLocaleString()} {/* Format the price with thousands separators */}
+                  <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
+                      &nbsp;THB{propertyData.ppt_saleorrent === "RENT" ? "/month" : ""}
+                  </span>
+              </>
           ) : (
-            <></>
-          )}
+              "n/a"
+          )}{" "}
         </Text>
-        <Text mt="-1" fontWeight="extrabold" fontSize="18px" color="emerald.500">
-          {propertyData.ppt_selling_price !== null ? (
-            <>
-              {propertyData.ppt_selling_price.toLocaleString()}
-              <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                &nbsp;THB
-              </span>
-            </>
-          ) : (
-            <></>
-          )}
-        </Text>
-        </>
       )}
 
       {propertyData && (
@@ -177,6 +174,18 @@ const PropertyDetails = () => {
               <Text>Purpose</Text>
               <Text fontWeight="bold">{propertyData.ppt_saleorrent}</Text>
             </Flex>
+            {propertyData.ppt_floor_unit && (
+              <Flex
+                justifyContent="space-between"
+                w="400px"
+                borderBottom="1px"
+                borderColor="gray.100"
+                p="3"
+              >
+                <Text>floor</Text>
+                <Text fontWeight="bold">{propertyData.ppt_floor_unit}</Text>
+              </Flex>
+            )}
             {propertyData.ppt_view && (
               <Flex
                 justifyContent="space-between"
@@ -251,13 +260,50 @@ const PropertyDetails = () => {
             <Text fontSize="15px" align='right'>
               {propertyData.partner_type === 'Agent' ? 'Acr' : 'Ocr'} {propertyData.partner_name}
             </Text>
+            {userData && userData.role == "Admin" &&   <>
+              {propertyData.partner_number && (
+                <Text fontSize="15px" align='right'>
+                  tel: {propertyData.partner_number}
+                </Text>
+              )}
+              {propertyData.partner_line && (
+                <Text fontSize="15px" align='right'>
+                  line: {propertyData.partner_line}
+                </Text>
+              )}
+              {propertyData.partner_mail && (
+                <Text fontSize="15px" align='right'>
+                  more contact: {propertyData.partner_mail}
+                </Text>
+              )}
+              {propertyData.tranfer_fee && (
+                <Text fontSize="15px" align='right'>
+                  tranfer fee: {propertyData.tranfer_fee}
+                </Text>
+              )}
+              {propertyData.notes && (
+                <Text fontSize="15px" align='right'>
+                  ***{propertyData.notes}
+                </Text>
+              )}
+              {propertyData.ppt_room_number && (
+                <Text fontSize="15px" align='right'>
+                  room number: {propertyData.ppt_room_number}
+                </Text>
+              )}
+              {propertyData.ppt_room_number && (
+                <Text fontSize="15px" align='right'>
+                  tower: {propertyData.ppt_tower_unit}
+                </Text>
+              )}
+            </>}
             <Text mb='2vh' fontSize="15px" align='center'>
               Last Update {formatTime(propertyData.update_time)}
             </Text>
             
           </VStack>
           {recommendedProperties.length != 0 ? <>
-          <Text fontSize="2xl" fontWeight="black">
+          <Text fontSize="2xl" fontWeight="black" mb='6'>
               Similar Properties In {propertyData.primary_area}
           </Text>
             

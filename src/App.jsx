@@ -8,12 +8,13 @@ import Footer from './components/Footer'
 import HouseProvider from './context/HouseContext';
 import AssetDetails from './components/PropertyDetails/PropertyDetails';
 import InsertAssets from './routes/InsertAssets';
+import EditAsset from './routes/EditAsset'
 import UserDataProvider from './context/UserDataContext';
 
 const App = () => {
   return (
-    <HouseProvider>
-      <UserDataProvider>
+    <UserDataProvider>
+      <HouseProvider>
         <Container maxW='container.lg' minH='100vh' px='6'>
           <Header />
           <Routes>
@@ -21,7 +22,10 @@ const App = () => {
             <Route path='property-details' element={ <PropertyDetails /> } >
               <Route path=":propertyId" element={<AssetDetails />} />
             </Route>
-            <Route path='/insert-info' element={<InsertAssets />} />
+            <Route path='insert-info' element={<InsertAssets />} >
+              {/* <Route path=":propertyId" element={<EditAsset />} /> */}
+            </Route>
+            <Route path='insert-info/:propertyId' element={ <EditAsset /> } />
             <Route path="*"
                   element={ <main style={{ padding: "1rem" }}>
                               <p>There's nothing here!</p>
@@ -31,8 +35,8 @@ const App = () => {
           </Routes>
         </Container>
         <Footer />
-      </UserDataProvider>
-    </HouseProvider>
+      </HouseProvider>
+    </UserDataProvider>
   )
 }
 

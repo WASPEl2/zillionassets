@@ -12,16 +12,21 @@ import {
   Flex,
   Checkbox
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useParams } from "react-router-dom";
 import { BsEmojiSmile } from "react-icons/bs";
+
+import { HouseContext } from "../../context/HouseContext";
 import { config } from "../../data";
 
-const InsertInfo = () => {
+const EditInfo = () => {
+  const { propertyId } = useParams();
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState("");
   const [condoList, setCondoList] = useState([]);
   const [selectedCondo, setSelectedCondo] = useState('');
 
+  const { getPropertyById } = useContext(HouseContext);
 
   const [formData, setFormData] = useState({
     unit_code: "",
@@ -63,8 +68,16 @@ const InsertInfo = () => {
   });
 
   useEffect(() => {
-        fetchData();
+    fetchImageData();
+    fetchData();
+    setFormData((prevData) => ({
+        ...prevData,
+        ...getPropertyById(propertyId),
+      }));
+    // setFormData(getPropertyById(propertyId));
   }, []);
+
+  
 
   const fetchData = async () => {
     try {
@@ -80,6 +93,22 @@ const InsertInfo = () => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchImageData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${config.api}/zillionassets/en/asset-image/${propertyId}`);
+      const images = await response.json();
+      setFormData((prevData) => ({
+        ...prevData,
+        ppt_media: images,
+      }));
+    } catch (error) {
+      console.error('Error fetching image data:', error);
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -371,7 +400,7 @@ const InsertInfo = () => {
       return;
     }
 
-    if (formData.mainImageIndex === null) {
+    if (formData.mainImageIndex === null && formData.ppt_media.length > formData.mainImageIndex) {
       alert("Please select a main image");
       return;
     }
@@ -472,22 +501,30 @@ const InsertInfo = () => {
 
       // Append each file in ppt_image array to formDataToSend
       formData.ppt_media.forEach((file, index) => {
-        const fileType = file.type.startsWith("image/")
-          ? "image"
-          : file.type.startsWith("video/")
-          ? "video"
-          : "other";
+          let mediaData;
+          let dotName;
+          let media_type;
 
-        console.log(file)
-        formDataToSend.append(
-          `ppt_media[]`,
-          file,
-          `ppt_media_${fileType}_${index}.${file.name.split(".").pop()}`
-        );
+          if (file.media_type === "Image" || file.media_type === "Video") {
+              mediaData = file.media_data;
+              dotName = file.media_type === "Image" ? 'jpg' : 'mp4';
+              media_type = file.media_type === "Image" ? 'image' : 'video';
+          } else {
+              // Handle the case where media data is not directly available
+              mediaData = file; // Assuming media data is available in this case
+              dotName = file.name.split(".").pop();
+              media_type = 'image';
+          }
+          formDataToSend.append(
+              `ppt_media[]`,
+              new Blob([mediaData], { type: `image/${dotName}`}), // Construct a Blob from media data
+              `ppt_media_${index}.${dotName}`
+          );
       });
 
+
       const response = await fetch(
-        `${config.api}/zillionassets/en/insert-asset`,
+        `${config.api}/zillionassets/en/insert-asset/${propertyId}`,
         {
           method: "POST",
           body: formDataToSend,
@@ -533,7 +570,6 @@ const InsertInfo = () => {
           partner_mail: "",
           partner_number: "",
           tranfer_fee: "",
-          ppt_writer: 1,
           notes: "",
           isHighlight:false,
         });
@@ -555,7 +591,7 @@ const InsertInfo = () => {
 
     <Box>
       <Text textAlign='center' fontSize="lg" fontWeight="medium" color="gray.700" my={4}>
-        Insert Asset
+        Edit Asset
       </Text>
       <form onSubmit={handleSubmit}>
         <FormControl mb={4}>
@@ -616,7 +652,7 @@ const InsertInfo = () => {
                           X
                       </Button>
                       <Image
-                          src={URL.createObjectURL(file)}
+                          src={file instanceof File ? URL.createObjectURL(file) : `data:image/jpeg;base64,${file.media_data}`}
                           alt={`Img ${index}`}
                           w="full"
                           h="32"
@@ -1283,4 +1319,4 @@ const InsertInfo = () => {
   );
 };
 
-export default InsertInfo;
+export default EditInfo;

@@ -1,11 +1,15 @@
-import { createContext, useState, useEffect, useRef } from 'react';
+import { createContext, useState, useEffect, useContext} from 'react';
+
+import { UserDataContext } from "./UserDataContext";
 import { config } from "../data";
 
 export const HouseContext = createContext('');
 
 const HouseProvider = ({ children }) => {
     const limit = 30;
+    const { userData } = useContext(UserDataContext);
     const [properties, setProperties] = useState([]);
+    const [highlight, setHighlight] = useState([]);
     const [primaryArea, setPrimaryArea] = useState('');
     const [primaryAreas, setPrimaryAreas] = useState([]);
     const [minPrice, setMinPrice] = useState('');
@@ -17,13 +21,22 @@ const HouseProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1); 
     const [totalPages, setTotalPages] = useState(1);
-
-
-    const containerRef = useRef(null);
+    const [currentProperties, setCurrentProperties] = useState([]);
 
     useEffect(() => {
         fetchData(currentPage);
-    }, [currentPage]);
+    }, [userData]);
+
+    useEffect(() => {
+        updateCurrentProperties();
+    }, [properties,currentPage]);
+
+    const updateCurrentProperties = () => {
+        const startIndex = (currentPage - 1) * limit;
+        const endIndex = startIndex + limit;
+        const currentProperties = properties.slice(startIndex, endIndex);
+        setCurrentProperties(currentProperties);
+    };
 
     const fetchData = async () => {
         if (!isLoading) {
@@ -32,8 +45,6 @@ const HouseProvider = ({ children }) => {
             
             try {
                 const queryParams = new URLSearchParams({
-                    limit,
-                    page: currentPage,
                 });
 
                 if (primaryArea) queryParams.append('primaryArea', primaryArea);
@@ -45,13 +56,21 @@ const HouseProvider = ({ children }) => {
                 
                 const url = `${config.api}/zillionassets/en/assets-detail?${queryParams}`;
 
-                const response = await fetch(url);
+                const response = await fetch(url, {
+                    credentials: 'include'
+                });
                 const data = await response.json();
+                
+                setProperties(data.properties);
+
+                const highlightProperties = data.properties.filter(property => property.isHighlight == true);
+                setHighlight(highlightProperties);
 
                 setTypes(data.all_types);
                 setPrimaryAreas(data.primary_areas);
-                setProperties(data.properties);
-                setTotalPages(data.total_pages);
+                setTotalPages(Math.ceil(data.properties.length / limit));
+
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -66,9 +85,41 @@ const HouseProvider = ({ children }) => {
         fetchData();
     }
 
+    const getPropertyById = (propertyId) => {
+        
+        // Filter the properties array to find the property with the given ID
+        const property = properties.find(property => property.ppt_id === propertyId);
+        return property;
+    };
+
+    const getRecommendedProperties = (propertyId, primaryArea, assetsType, bedrooms, price) => {
+        // Filter the properties array based on the specified criteria
+        const recommendedProperties = properties.filter(property => {
+            // Exclude the property with the specified ID
+            if (property.id === propertyId) {
+                return false;
+            }
+
+            // Check if the property meets the recommended criteria
+            const meetsCriteria = (
+                property.primary_area === primaryArea &&
+                property.ppt_type === assetsType &&
+                property.ppt_bedroom >= bedrooms &&
+                property.ppt_bedroom <= bedrooms + 2 &&
+                property.price >= price * 0.85 &&
+                property.price <= price * 1.15
+            );
+
+            return meetsCriteria;
+        });
+
+        return recommendedProperties;
+    };
+
     return (
         <HouseContext.Provider value={{
-            properties,
+            properties: currentProperties,
+            highlight,
             primaryAreas,
             setPrimaryArea,
             minPrice,
@@ -85,6 +136,8 @@ const HouseProvider = ({ children }) => {
             setCurrentPage,
             currentPage,
             totalPages,
+            getPropertyById,
+            getRecommendedProperties,
         }}>
             {children}
         </HouseContext.Provider>
