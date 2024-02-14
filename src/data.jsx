@@ -2,5 +2,5 @@ export const bannerData = [
     {900: 'Premium Product'}, 
 ]
 export const config = {
-    api: 'http://127.0.0.1:5000', 
+    api: 'http://159.138.231.127:5000', 
 };
