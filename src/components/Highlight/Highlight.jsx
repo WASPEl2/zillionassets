@@ -6,7 +6,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import HighlightItem from './HighlightItem';
 import { HouseContext } from "../../context/HouseContext";
 
-const Highlight = () => {
+const  Highlight = React.forwardRef((props, ref) => {
     const { highlight, isLoading } = useContext(HouseContext);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const containerRef = useRef(null);
@@ -60,7 +60,7 @@ const Highlight = () => {
     }
 
     return (
-        <>
+        <div ref={ref}>
             <Heading py='2' size={{ base: 'sm', md: 'md' }}>Exclusive Opportunity</Heading>
             <Flex>
                 {currentImageIndex !== 0 && <Flex
@@ -100,8 +100,8 @@ const Highlight = () => {
             </Flex>
             
             
-        </>
+        </div>
     );
-};
+});
 
 export default Highlight;

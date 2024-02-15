@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Flex, Heading, Box, Button, HStack, chakra, ButtonGroup, useBreakpointValue, Modal, ModalOverlay, ModalContent, } from '@chakra-ui/react';
+import { Flex, Heading, Box, Button, HStack, chakra, ButtonGroup, useBreakpointValue, Modal, ModalOverlay, ModalContent, Image } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import NavMobile from './NavMobile';
 import LoginForm from './Login';
@@ -7,7 +7,7 @@ import { config } from '../../data';
 import { UserDataContext } from "../../context/UserDataContext";
 import ProfilePanel from './ProfilePanel';
 
-import profile from "../../assets/images/user.png";
+import logo from "../../assets/images/logo.jpg";
 
 
 const Header = () => {
@@ -63,7 +63,10 @@ const Header = () => {
     <chakra.header id="header" borderBottom='1px solid rgb(0,0,0,0.3)'>
       <Flex w='100%' py='5' align='center' justify='space-between'>
         <Link to='/'>
+          <Flex justifyContent='center' alignItems='center'>
+          <Image src={logo} alt="Profile" boxSize="30px" objectFit="cover" cursor="pointer" mr="1" />
           <Heading fontSize='3xl' color='emerald.950'>Zillionassets</Heading>
+          </Flex>
         </Link>
         {
           isDesktop ? (

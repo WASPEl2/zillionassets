@@ -9,12 +9,13 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { BiPlus } from "react-icons/bi";
+import React, { useRef } from 'react';
 
 import { bannerData } from "../data";
 import Apartment1Lg from "../assets/images/apartments/a1lg.png";
 import Apartment6Lg from "../assets/images/apartments/a6lg.png";
 
-const Banner = () => {
+const Banner = ({onGetStartedClick}) => {
   return (
     <>
       <Stack direction="row" my='6' overflow='hidden'>
@@ -36,7 +37,7 @@ const Banner = () => {
             totam!
           </Text>
           <Box pt="3" pb="8" >
-            <Button bg="emerald.900">Get Started</Button>
+            <Button bg="emerald.900" onClick={onGetStartedClick}>Get Started</Button>
           </Box>
 
           <HStack spacing="3" >
