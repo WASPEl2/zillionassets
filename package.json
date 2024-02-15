@@ -1,11 +1,11 @@
 {
-  "name": "real-estate-website",
+  "name": "zillionassets",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && pm2 start ecosystem.config.cjs --env production",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -13,6 +13,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "framer-motion": "^6.5.1",
+    "pm2": "^5.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
