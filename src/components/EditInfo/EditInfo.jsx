@@ -587,6 +587,23 @@ const EditInfo = () => {
       setLoading(false);
     }
   };
+
+  const formatPrice = (value) => {
+    // Ensure value is a string
+    const stringValue = String(value);
+
+    const numericValue = parseFloat(stringValue.replace(/[^0-9.]/g, ""));
+    if (!isNaN(numericValue)) {
+      const formattedPrice = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(numericValue);
+      return formattedPrice;
+    }
+    return stringValue;
+  };
+
+
   return (
 
     <Box>
@@ -1145,7 +1162,7 @@ const EditInfo = () => {
             <Flex>
               <Input
                 name="ppt_selling_price"
-                value={formData.ppt_selling_price}
+                value={formatPrice(formData.ppt_selling_price)}
                 onChange={handleChange}
                 mt={1}
                 p={2}
@@ -1167,7 +1184,7 @@ const EditInfo = () => {
             <Flex>
               <Input
                   name="ppt_rental_price"
-                  value={formData.ppt_rental_price}
+                  value={formatPrice(formData.ppt_rental_price)}
                   onChange={handleChange}
                   mt={1}
                   p={2}

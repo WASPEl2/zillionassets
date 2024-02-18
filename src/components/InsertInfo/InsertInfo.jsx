@@ -1146,7 +1146,7 @@ const InsertInfo = () => {
             <Flex>
               <Input
                   name="ppt_rental_price"
-                  value={formData.ppt_rental_price.toLocaleString()}
+                  value={formatPrice(formData.ppt_rental_price)}
                   onChange={handleChange}
                   mt={1}
                   p={2}
