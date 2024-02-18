@@ -23,7 +23,6 @@ const PropertyDetails = () => {
 
   useEffect(() =>{
     if (action === "SALE") {
-        console.log("start", action,purpose);
         setPurpose(action);
         
     }
@@ -31,8 +30,6 @@ const PropertyDetails = () => {
     
     const delay = setTimeout(() => {
       searchHandler();
-      console.log("start setTimeout", action,purpose);
-      
     }, 3000)
 
     return () => clearTimeout(delay);

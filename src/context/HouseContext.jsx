@@ -39,8 +39,6 @@ const HouseProvider = ({ children }) => {
     };
 
     const fetchData = async () => {
-            console.log("searching",purpose)
-            
 
             setIsLoading(true);
             
@@ -81,7 +79,6 @@ const HouseProvider = ({ children }) => {
 
     const searchHandler = () => {
         setCurrentPage(1);
-        console.log("searchHandler",purpose)
         fetchData();
     }
 
