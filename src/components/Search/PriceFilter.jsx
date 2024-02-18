@@ -56,11 +56,6 @@ const priceHandler = (event) => {
     }
   };
 
-  const removeCommas = (value) => {
-    console.log(value,value.replace(/,/g, ''))
-    return value.replace(/,/g, '');
-  };
-
   return (
     <FormControl ref={customPriceRef}>
       <Select placeholder="Select Price" value={selectedPrice} onChange={priceHandler}>

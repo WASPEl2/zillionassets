@@ -39,7 +39,8 @@ const HouseProvider = ({ children }) => {
     };
 
     const fetchData = async () => {
-        if (!isLoading) {
+            console.log("searching",purpose)
+            
 
             setIsLoading(true);
             
@@ -53,7 +54,6 @@ const HouseProvider = ({ children }) => {
                 if (maxPrice) queryParams.append('maxPrice', maxPrice);
                 if (purpose) queryParams.append('purpose', purpose);
                 if (searchQuery) queryParams.append('searchQuery', searchQuery);
-                
                 const url = `${config.api}/zillionassets/en/assets-detail?${queryParams}`;
 
                 const response = await fetch(url, {
@@ -76,12 +76,12 @@ const HouseProvider = ({ children }) => {
             } finally {
                 setIsLoading(false);
             }
-        } 
         
     };
 
     const searchHandler = () => {
         setCurrentPage(1);
+        console.log("searchHandler",purpose)
         fetchData();
     }
 
@@ -121,12 +121,15 @@ const HouseProvider = ({ children }) => {
             properties: currentProperties,
             highlight,
             primaryAreas,
+            primaryArea,
             setPrimaryArea,
             minPrice,
             maxPrice,
             setMinPrice,
             setMaxPrice,
+            type,
             setType,
+            purpose,
             setPurpose,
             searchQuery,
             setSearchQuery,

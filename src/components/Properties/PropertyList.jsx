@@ -7,7 +7,7 @@ import PropertyItem from './PropertyItem';
 import Pagination from './Pagination'
 
 const PropertyList = () => {
-    const { properties, isLoading, currentPage, setCurrentPage, totalPages } = useContext(HouseContext);
+    const { purpose, properties, isLoading, currentPage, setCurrentPage, totalPages } = useContext(HouseContext);
 
     const nextPage = () => {
         if (currentPage < totalPages) {
@@ -42,7 +42,7 @@ const PropertyList = () => {
             : 
                 <Grid my='3' rowGap='4' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))' >
                     {properties.map((item, index) => (
-                        <Link to={`/property-details/${item.ppt_id}`} key={index} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={`/property-details/${purpose}/${item.ppt_id}`} key={index} onClick={() => window.scrollTo(0, 0)}>
                             <PropertyItem key={item.ppt_id} property={item} />
                         </Link>
                     ))}

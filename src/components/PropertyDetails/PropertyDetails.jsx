@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { Stack, VStack, Flex, Heading, Text, Box, HStack, Button, Spinner, IconButton, } from "@chakra-ui/react";
 import { BiBed, BiBath, BiArea, BiEdit } from "react-icons/bi";
 import { useParams, Link  } from "react-router-dom";
@@ -12,14 +12,31 @@ import { UserDataContext } from "../../context/UserDataContext";
 import Form from "./Form";
 
 const PropertyDetails = () => {
-  const { propertyId } = useParams();
+  const { propertyId, action } = useParams();
   const { userData } = useContext(UserDataContext);
-  const { getPropertyById, getRecommendedProperties } = useContext(HouseContext);
+  const { searchHandler, purpose, setPurpose, getPropertyById, getRecommendedProperties } = useContext(HouseContext);
   const propertyData = getPropertyById(propertyId);
   const [recommendedProperties, setRecommendedProperties] = useState([]);
   const [imageData, setImageData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+
+  useEffect(() =>{
+    if (action === "SALE") {
+        console.log("start", action,purpose);
+        setPurpose(action);
+        
+    }
+    
+    
+    const delay = setTimeout(() => {
+      searchHandler();
+      console.log("start setTimeout", action,purpose);
+      
+    }, 3000)
+
+    return () => clearTimeout(delay);
+  }, [purpose]);
 
   useEffect(() => {
     const fetchImageData = async () => {
@@ -44,6 +61,7 @@ const PropertyDetails = () => {
         try {
           // Call the function to get recommended properties based on the current property ID
           const recommendedProps = getRecommendedProperties(propertyId, propertyData.primary_area, propertyData.ppt_type, propertyData.ppt_bedroom, propertyData.price);
+          
           setRecommendedProperties(recommendedProps);
         } catch (error) {
           console.error('Error fetching recommended properties:', error);
@@ -70,7 +88,7 @@ const PropertyDetails = () => {
 
   return (
     <>
-      <ImageScrollbar data={imageData} isLoading={isLoading} />
+      {/* <ImageScrollbar data={imageData} isLoading={isLoading} /> */}
       {propertyData && (
         <Stack direction={{ base: 'column', md: 'row' }} justify='space-between' align={{ md: 'center' }} my='2vh'>
           <Box>
@@ -93,9 +111,9 @@ const PropertyDetails = () => {
           </Box>
 
           <HStack>
-            <Text px='3' borderRadius='full' bg='green.300'>{propertyData.ppt_type}</Text>
-            <Text px='3' borderRadius='full' bg='purple.300'>{propertyData.primary_area}</Text>
-            <Text px='3' borderRadius='full' bg='orange.300'>{propertyData.ppt_saleorrent}</Text>
+            <Text px='3' borderRadius='full' bg='green.300' overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">{propertyData.ppt_type}</Text>
+            <Text px='3' borderRadius='full' bg='purple.300' overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">{propertyData.primary_area}</Text>
+            <Text px='3' borderRadius='full' bg='orange.300' overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">{propertyData.ppt_saleorrent}</Text>
           </HStack>
         </Stack>
       )}
@@ -107,7 +125,7 @@ const PropertyDetails = () => {
               <>
                   {Number(propertyData.price).toLocaleString()} {/* Format the price with thousands separators */}
                   <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                      &nbsp;THB{propertyData.ppt_saleorrent === "RENT" ? "/month" : ""}
+                      &nbsp;THB{purpose === "RENT" ? "/month" : ""}
                   </span>
               </>
           ) : (
@@ -137,11 +155,36 @@ const PropertyDetails = () => {
               </HStack>
             </Stack>
 
-            <Text fontSize='15px'>{propertyData.ppt_room_description}</Text>
-            <Text fontSize='15px'>{propertyData.ppt_description}</Text>
-            <Text fontSize='15px'>{propertyData.ppt_nearby}</Text>
-            <Text fontSize='15px'>{propertyData.ppt_nearbytrain}</Text>
-            <Text fontSize='15px'>{propertyData.ppt_optional_description}</Text>
+            <Heading fontSize='16px'>description</Heading>
+            <Text fontSize='15px'>
+                {propertyData.ppt_room_description?.split('\n').map((item, key) => {
+                    return <span key={key}>{item}<br /></span>
+                })}
+            </Text>
+            <Text fontSize='15px'>
+                {propertyData.ppt_description?.split('\n').map((item, key) => {
+                    return <span key={key}>{item}<br /></span>
+                })}
+            </Text>
+            <Text fontSize='15px'>
+                {propertyData.ppt_optional_description?.split('\n').map((item, key) => {
+                    return <span key={key}>{item}<br /></span>
+                })}
+            </Text>
+
+            <Text></Text>
+            <Heading fontSize='16px'>Near by</Heading>
+            <Text fontSize='15px'>
+                {propertyData.ppt_nearby?.split('\n').map((item, key) => {
+                    return <span key={key}>{item}<br /></span>
+                })}
+            </Text>
+            <Text fontSize='15px'>
+                {propertyData.ppt_nearbytrain?.split('\n').map((item, key) => {
+                    return <span key={key}>{item}<br /></span>
+                })}
+            </Text>
+            
 
           </VStack>
 

@@ -3,9 +3,9 @@ import { useContext } from "react";
 import { HouseContext } from "../../context/HouseContext";
 
 const PurposeFilter = () => {
-  const { setPurpose } = useContext(HouseContext);
+  const { purpose, setPurpose } = useContext(HouseContext);
 
-  const purpose = [
+  const purposes = [
     { value: "RENT" },
     { value: "SALE" },
   ];
@@ -15,8 +15,8 @@ const PurposeFilter = () => {
   };
 
   return (
-    <Select defaultValue="RENT" onChange={purposeHandler}>
-      {purpose.map((text, index) =>
+    <Select defaultValue={purpose} onChange={purposeHandler}>
+      {purposes.map((text, index) =>
           <option key={index}>{text.value}</option>
         )
       }

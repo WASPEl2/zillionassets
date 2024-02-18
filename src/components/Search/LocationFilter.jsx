@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { HouseContext } from '../../context/HouseContext';
 
 const LocationFilter = () => {
-  const { setPrimaryArea, primaryAreas } = useContext(HouseContext);
+  const { primaryArea, setPrimaryArea, primaryAreas } = useContext(HouseContext);
 
   const locationHandler = (event) => {
     setPrimaryArea(event.target.value);
@@ -13,7 +13,7 @@ const LocationFilter = () => {
   const filteredPrimaryAreas = primaryAreas.filter(country => country !== null);
 
   return (
-    <Select placeholder='select primary area' onChange={locationHandler}>
+    <Select placeholder='select primary area' onChange={locationHandler} value={primaryArea}>
       {filteredPrimaryAreas.map((country, index) => (
         <option key={index}>{country}</option>
       ))}

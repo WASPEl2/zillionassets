@@ -7,7 +7,7 @@ import HighlightItem from './HighlightItem';
 import { HouseContext } from "../../context/HouseContext";
 
 const  Highlight = React.forwardRef((props, ref) => {
-    const { highlight, isLoading } = useContext(HouseContext);
+    const { highlight, isLoading, purpose } = useContext(HouseContext);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const containerRef = useRef(null);
 
@@ -83,7 +83,7 @@ const  Highlight = React.forwardRef((props, ref) => {
                     }}
                 >
                     {highlight.map((item, index) => (
-                        <Link to={`/property-details/${item.ppt_id}`} key={index} style={{ marginRight: '10px' }} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={`/property-details/${purpose}/${item.ppt_id}`} key={index} style={{ marginRight: '10px' }} onClick={() => window.scrollTo(0, 0)}>
                             <HighlightItem key={item.ppt_id} property={item} />
                         </Link>
                     ))}

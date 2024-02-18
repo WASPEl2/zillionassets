@@ -8,13 +8,13 @@ import PropertyTypeFilter from "./PropertyTypeFilter";
 import PurposeFilter from './PurposeFilter';
 
 const Search = () => {
-  const {inputQuery, setInputQuery} = useState("")
+  const [ inputQuery, setInputQuery ] = useState(null)
 
-  const { searchHandler, setSearchQuery } = useContext(HouseContext);
+  const { searchHandler, searchQuery, setSearchQuery } = useContext(HouseContext);
 
   const handleSearchInputChange = (event) => {
     setInputQuery(event.target.value);
-    setSearchQuery(inputQuery)
+    setSearchQuery(event.target.value)
   };
 
   return (
@@ -25,7 +25,7 @@ const Search = () => {
         {/* Search input */}
         <Input
           placeholder="Enter keywords to find your ideal property..."
-          value={inputQuery}
+          value={inputQuery? inputQuery:searchQuery}
           onChange={handleSearchInputChange}
         />
         <Button bgColor='emerald.800' onClick={searchHandler} p={{base: 3, md: 2}} size="100%">Search</Button>

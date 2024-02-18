@@ -7,34 +7,6 @@ const ImageScrollbar = ({ data, isLoading }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const handleWheel = (event) => {
-      if (containerRef.current && containerRef.current.contains(event.target)) {
-        event.preventDefault();
-
-        // Calculate the direction of the scroll
-        const scrollDirection = Math.sign(event.deltaY);
-
-        // Adjust the current image index based on the scroll direction
-        const newIndex = Math.min(
-          Math.max(currentImageIndex + scrollDirection, 0),
-          data.length - 1
-        );
-
-        // Scroll to the new index
-        scrollToIndex(newIndex);
-      }
-    };
-
-    if (containerRef.current) {
-      containerRef.current.addEventListener('wheel', handleWheel);
-
-      // return () => {
-      //   containerRef.current.removeEventListener('wheel', handleWheel);
-      // };
-    }
-  }, [currentImageIndex]);
-
   const scrollToIndex = (index) => {
     const imageWidth = containerRef.current.children[0].offsetWidth;
     const scrollAmount = index * imageWidth;
@@ -96,7 +68,8 @@ const ImageScrollbar = ({ data, isLoading }) => {
                 alt="property"
                 src={`data:image/jpeg;base64,${item.media_data}`}
                 width='100%'
-                height='70vh'
+                height='auto'
+                maxHeight='70vh'
                 objectFit="contain"
               />
             </Box>
