@@ -84,7 +84,14 @@ const  Highlight = React.forwardRef((props, ref) => {
                 >
                     {highlight.map((item, index) => (
                         <Link to={`/property-details/${purpose}/${item.ppt_id}`} key={index} style={{ marginRight: '10px' }} onClick={() => window.scrollTo(0, 0)}>
-                            <HighlightItem key={item.ppt_id} property={item} />
+                            <Box
+                                className="property-item-wrapper"
+                                transition="transform 0.2s ease"
+                                _hover={{ transform: 'scale(1.05)' }}
+                                mr="4"
+                            >
+                                <HighlightItem key={item.ppt_id} property={item} />
+                            </Box>
                         </Link>
                     ))}
                 </Box>

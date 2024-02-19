@@ -757,11 +757,16 @@ const EditInfo = () => {
                 w="full"
                 value={selectedCondo}
                 onChange={handleSelectCondoChange}
+                isSearchable
             >
                 <option value="">Select Condo</option>
                 {/* Map through condoList and render options */}
                 {condoList.map((condo, index) => (
-                    <option key={index} value={condo.ppt_assets_name}>
+                    <option
+                        key={index}
+                        value={condo.ppt_assets_name}
+                        data={condo} // Attach the data object to the option
+                    >
                         {condo.ppt_assets_name}
                     </option>
                 ))}

@@ -1,4 +1,4 @@
-import { Center, Button, Grid, Heading, Stack, Flex, Spinner, Text } from '@chakra-ui/react';
+import { Center, Button, Grid, Heading, Stack, Flex, Spinner, Text,Box } from '@chakra-ui/react';
 import { useContext } from "react";
 import { Link } from 'react-router-dom';
 
@@ -43,7 +43,13 @@ const PropertyList = () => {
                 <Grid my='3' rowGap='4' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))' >
                     {properties.map((item, index) => (
                         <Link to={`/property-details/${purpose}/${item.ppt_id}`} key={index} onClick={() => window.scrollTo(0, 0)}>
-                            <PropertyItem key={item.ppt_id} property={item} />
+                            <Box
+                                className="property-item-wrapper"
+                                transition="transform 0.2s ease"
+                                _hover={{ transform: 'scale(1.05)' }}
+                            >
+                                <PropertyItem key={item.ppt_id} property={item} />
+                            </Box>
                         </Link>
                     ))}
                 </Grid>
