@@ -574,6 +574,7 @@ const EditInfo = () => {
           isHighlight:false,
         });
         setAllData("");
+        setSelectedCondo("");
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         const errorResponse = await response.json();

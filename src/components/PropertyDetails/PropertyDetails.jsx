@@ -152,35 +152,49 @@ const PropertyDetails = () => {
               </HStack>
             </Stack>
 
-            <Heading fontSize='16px'>description</Heading>
-            <Text fontSize='15px'>
-                {propertyData.ppt_room_description?.split('\n').map((item, key) => {
-                    return <span key={key}>{item}<br /></span>
-                })}
-            </Text>
-            <Text fontSize='15px'>
-                {propertyData.ppt_description?.split('\n').map((item, key) => {
-                    return <span key={key}>{item}<br /></span>
-                })}
-            </Text>
-            <Text fontSize='15px'>
-                {propertyData.ppt_optional_description?.split('\n').map((item, key) => {
-                    return <span key={key}>{item}<br /></span>
-                })}
-            </Text>
+            {(propertyData.ppt_room_description || propertyData.ppt_description || propertyData.ppt_optional_description) && (
+                <Heading fontSize='16px'>Description</Heading>
+            )}
+            {propertyData.ppt_room_description && (
+                <Text fontSize='15px'>
+                    {propertyData.ppt_room_description.split('\n').map((item, key) => (
+                        <span key={key}>{item}<br /></span>
+                    ))}
+                </Text>
+            )}
+            {propertyData.ppt_description && (
+                <Text fontSize='15px'>
+                    {propertyData.ppt_description.split('\n').map((item, key) => (
+                        <span key={key}>{item}<br /></span>
+                    ))}
+                </Text>
+            )}
+            {propertyData.ppt_optional_description && (
+                <Text fontSize='15px'>
+                    {propertyData.ppt_optional_description.split('\n').map((item, key) => (
+                        <span key={key}>{item}<br /></span>
+                    ))}
+                </Text>
+            )}
 
             <Text></Text>
-            <Heading fontSize='16px'>Near by</Heading>
-            <Text fontSize='15px'>
-                {propertyData.ppt_nearby?.split('\n').map((item, key) => {
-                    return <span key={key}>{item}<br /></span>
-                })}
-            </Text>
-            <Text fontSize='15px'>
-                {propertyData.ppt_nearbytrain?.split('\n').map((item, key) => {
-                    return <span key={key}>{item}<br /></span>
-                })}
-            </Text>
+            {(propertyData.ppt_nearby || propertyData.ppt_nearbytrain) && (
+                <Heading fontSize='16px'>Nearby</Heading>
+            )}
+            {propertyData.ppt_nearby && (
+                <Text fontSize='15px'>
+                    {propertyData.ppt_nearby.split('\n').map((item, key) => (
+                        <span key={key}>{item}<br /></span>
+                    ))}
+                </Text>
+            )}
+            {propertyData.ppt_nearbytrain && (
+                <Text fontSize='15px'>
+                    {propertyData.ppt_nearbytrain.split('\n').map((item, key) => (
+                        <span key={key}>{item}<br /></span>
+                    ))}
+                </Text>
+            )}
             
 
           </VStack>
