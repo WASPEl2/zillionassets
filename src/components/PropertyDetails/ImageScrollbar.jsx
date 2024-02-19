@@ -1,11 +1,28 @@
 import { useState, useRef, useEffect } from 'react';
-import { Box, Icon, Flex, Image, Spinner,Text } from '@chakra-ui/react';
+import { Box, Icon, Flex, Image, Spinner, Text } from '@chakra-ui/react';
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import styles from './SingleProperty.module.css';
 
 const ImageScrollbar = ({ data, isLoading }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const containerRef = useRef(null);
+  const [showTimeoutMessage, setShowTimeoutMessage] = useState(false);
+
+  useEffect(() => {
+    let timeoutId;
+
+    if (isLoading) {
+      timeoutId = setTimeout(() => {
+        setShowTimeoutMessage(true);
+      }, 10000);
+    } else {
+      setShowTimeoutMessage(false);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isLoading]);
 
   const scrollToIndex = (index) => {
     const imageWidth = containerRef.current.children[0].offsetWidth;
@@ -50,8 +67,14 @@ const ImageScrollbar = ({ data, isLoading }) => {
       >
         {isLoading ? (
           <Flex justify="center" align="center" height="70vh">
-            <Spinner size="xl" color="emerald.800" />
-            <Text>&nbsp;&nbsp;Finding properties image ...</Text>
+            {showTimeoutMessage ? (
+              <Text>Loading too many images...</Text>
+            ) : (
+              <>
+                <Spinner size="xl" color="emerald.800" />
+                <Text>&nbsp;&nbsp;Finding properties image ...</Text>
+              </>
+            )}
           </Flex>
         ) : (
           data.map((item, index) => (
