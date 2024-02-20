@@ -6,7 +6,7 @@ import { config } from "../data";
 export const HouseContext = createContext('');
 
 const HouseProvider = ({ children }) => {
-    const limit = 30;
+    const limit = 24;
     const { userData } = useContext(UserDataContext);
     const [properties, setProperties] = useState([]);
     const [highlight, setHighlight] = useState([]);
