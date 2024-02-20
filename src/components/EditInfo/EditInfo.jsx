@@ -522,6 +522,12 @@ const EditInfo = () => {
           );
       });
 
+      const token = localStorage.getItem('jwtToken');
+      const headers = {};
+      if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+      }
+
 
       const response = await fetch(
         `${config.api}/zillionassets/en/insert-asset/${propertyId}`,
@@ -530,6 +536,7 @@ const EditInfo = () => {
           body: formDataToSend,
           credentials: 'include',
           withCredentials: true,
+          headers: headers
         }
       );
 
