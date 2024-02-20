@@ -87,14 +87,28 @@ const ImageScrollbar = ({ data, isLoading }) => {
               marginRight="2"
               display="inline-block"
             >
-              <Image
-                alt="property"
-                src={`data:image/jpeg;base64,${item.media_data}`}
-                width='100%'
-                height='auto'
-                maxHeight='70vh'
-                objectFit="contain"
-              />
+              {item.media_type === 'Video' ? (
+                <video
+                  controls
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    maxHeight: '70vh',
+                    objectFit: 'contain'
+                  }}
+                  src={`data:video/mp4;base64,${item.media_data}`}
+                />
+              ) : (
+                <Image
+                  alt="property"
+                  src={`data:image/jpeg;base64,${item.media_data}`}
+                  width='100%'
+                  height='auto'
+                  maxHeight='70vh'
+                  objectFit="contain"
+                />
+              )}
+              
             </Box>
           ))
         )}
