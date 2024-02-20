@@ -41,7 +41,8 @@ const HouseProvider = ({ children }) => {
     const fetchData = async () => {
 
             setIsLoading(true);
-            
+
+            const token = localStorage.getItem('jwtToken');
             try {
                 const queryParams = new URLSearchParams({
                 });
@@ -54,8 +55,14 @@ const HouseProvider = ({ children }) => {
                 if (searchQuery) queryParams.append('searchQuery', searchQuery);
                 const url = `${config.api}/zillionassets/en/assets-detail?${queryParams}`;
 
+                const headers = {};
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
                 const response = await fetch(url, {
-                    credentials: 'include'
+                    credentials: 'include',
+                    headers: headers
                 });
                 const data = await response.json();
                 

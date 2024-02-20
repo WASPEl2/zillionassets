@@ -155,17 +155,17 @@ const PropertyDetails = () => {
             {(propertyData.ppt_room_description || propertyData.ppt_description || propertyData.ppt_optional_description) && (
                 <Heading fontSize='16px'>Description</Heading>
             )}
-            
-            {propertyData.ppt_description && (
-                <Text fontSize='15px'>
-                    {propertyData.ppt_description.split('\n').map((item, key) => (
-                        <span key={key}>{item}<br /></span>
-                    ))}
-                </Text>
-            )}
             {propertyData.ppt_room_description && (
                 <Text fontSize='15px'>
                     {propertyData.ppt_room_description.split('\n').map((item, key) => (
+                        <span key={key}>{item}<br /></span>
+                    ))}
+                    <br />
+                </Text>
+            )}
+            {propertyData.ppt_description && (
+                <Text fontSize='15px'>
+                    {propertyData.ppt_description.split('\n').map((item, key) => (
                         <span key={key}>{item}<br /></span>
                     ))}
                 </Text>
@@ -184,14 +184,14 @@ const PropertyDetails = () => {
             )}
             {propertyData.ppt_nearby && (
                 <Text fontSize='15px'>
-                    {propertyData.ppt_nearby.split('\n').map((item, key) => (
+                    {propertyData.ppt_nearby.split(/[\n,]/).map((item, key) => (
                         <span key={key}>{item}<br /></span>
                     ))}
                 </Text>
             )}
             {propertyData.ppt_nearbytrain && (
                 <Text fontSize='15px'>
-                    {propertyData.ppt_nearbytrain.split('\n').map((item, key) => (
+                    {propertyData.ppt_nearbytrain.split(/[\n,]/).map((item, key) => (
                         <span key={key}>{item}<br /></span>
                     ))}
                 </Text>
@@ -237,8 +237,20 @@ const PropertyDetails = () => {
                 borderColor="gray.100"
                 p="3"
               >
-                <Text>floor</Text>
+                <Text>Floor</Text>
                 <Text fontWeight="bold">{propertyData.ppt_floor_unit}</Text>
+              </Flex>
+            )}
+            {propertyData.ppt_roomtype && (
+              <Flex
+                justifyContent="space-between"
+                w="400px"
+                borderBottom="1px"
+                borderColor="gray.100"
+                p="3"
+              >
+                <Text>Type</Text>
+                <Text fontWeight="bold">{propertyData.ppt_roomtype}</Text>
               </Flex>
             )}
             {propertyData.ppt_view && (

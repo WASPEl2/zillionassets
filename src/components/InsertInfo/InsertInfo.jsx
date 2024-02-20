@@ -352,7 +352,7 @@ const InsertInfo = () => {
     }
 
     if (!formData.primary_area) {
-      alert("Please inter primary area");
+      alert("Please enter primary area");
       return;
     }
 
@@ -484,7 +484,7 @@ const InsertInfo = () => {
           `ppt_media_${fileType}_${index}.${file.name.split(".").pop()}`
         );
       });
-
+      const token = localStorage.getItem('jwtToken');
       const response = await fetch(
         `${config.api}/zillionassets/en/insert-asset`,
         {
@@ -492,6 +492,9 @@ const InsertInfo = () => {
           body: formDataToSend,
           credentials: 'include',
           withCredentials: true,
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
         }
       );
 
@@ -751,6 +754,7 @@ const InsertInfo = () => {
             <option value="Hotel/Apartment">Hotel/Apartment</option>
             <option value="House/Office">House/Office</option>
             <option value="Town House">Town House</option>
+            <option value="Mansion">Mansion</option>
             <option value="2 Storey Single House">2 Storey Single House</option>
             <option value="3 Storey Single House">3 Storey Single House</option>
             <option value="Commercial Building">Commercial Building</option>

@@ -77,13 +77,13 @@ const LoginFormContent = ({ handleTabChange, setIsLoginModalOpen, setIsLoggedIn 
           email,
           password,
         }),
-        credentials: 'include',
       });
 
       if (response.ok) {
         const data = await response.json();
-        const sessionCookie = response.headers.get('Set-Cookie');
-        document.cookie = sessionCookie;
+        // Store the JWT in local storage or session storage
+        localStorage.setItem('jwtToken', data.access_token);
+
         setUserData(data.user);
         setIsLoginModalOpen(false);
         setIsLoggedIn(true);
@@ -98,6 +98,7 @@ const LoginFormContent = ({ handleTabChange, setIsLoginModalOpen, setIsLoggedIn 
     } finally {
       setLoading(false);
     }
+
   };
 
   return (

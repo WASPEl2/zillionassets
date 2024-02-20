@@ -126,17 +126,17 @@ const PropertyItem = ({ property }) => {
           <HStack spacing="5">
             <HStack>
               <BiBed style={{ color: "emerald.900" }} />
-              <Text fontSize="12px">{property.ppt_bedroom}</Text>
+              <Text fontSize="12px">{property.ppt_bedroom || "n/a"}</Text>
             </HStack>
 
             <HStack>
               <BiBath style={{ color: "emerald.900" }} />
-              <Text fontSize="12px">{property.ppt_showerroom}</Text>
+              <Text fontSize="12px">{property.ppt_showerroom || "n/a"}</Text>
             </HStack>
 
             <HStack>
               <BiArea style={{ color: "emerald.900" }} />
-              <Text fontSize="12px">{property.ppt_size} SQM</Text>
+              <Text fontSize="12px">{property.ppt_size || "n/a"} SQM</Text>
             </HStack>
           </HStack>
           <div mb="2.5" />

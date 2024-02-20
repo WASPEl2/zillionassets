@@ -31,32 +31,32 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(`${config.api}/zillionassets/en/logout`, {
-        method: 'POST',
-        credentials: 'include',
-        withCredentials: true,
-        mode: 'cors',
-      });
+        // Remove the JWT from local storage
+        localStorage.removeItem('jwtToken');
 
-      if (response.status === 201) {
+        // Update the state to reflect that the user is logged out
         setIsLoggedIn(false);
         setShowProfilePanel(false);
-        setUserData(null)
-      } else if (response.status === 400) {
-        setIsLoggedIn(false);
-        setShowProfilePanel(false);
-        setUserData(null)
-         alert(`Your are not logged in.`);
-      } else {
-        const errorResponse = await response.json();
-        alert(`Error Log out: ${errorResponse.error}`);
-      }
+        setUserData(null);
+
+        // You might not need to make a server request for logging out
+        // But if you have server-side logic to handle (like token blacklisting), keep the request
+        // const response = await fetch(`${config.api}/zillionassets/en/logout`, {
+        //     method: 'POST',
+        //     headers: {
+        //         "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`
+        //     },
+        // });
+
+        // if (response.ok) {
+        //     alert('You have been logged out successfully.');
+        // } else {
+        //     const errorResponse = await response.json();
+        //     alert(`Error Log out: ${errorResponse.error}`);
+        // }
     } catch (error) {
-      console.error('Error logging in:', error.message);
+        console.error('Error logging out:', error.message);
     }
-    // Perform logout logic
-    
-    
   };
 
   return (
