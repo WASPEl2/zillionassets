@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Container } from '@chakra-ui/react'
 
@@ -12,20 +13,22 @@ import EditAsset from './routes/EditAsset'
 import UserDataProvider from './context/UserDataContext';
 
 const App = () => {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   return (
     <UserDataProvider>
       <HouseProvider>
         <Container maxW='container.lg' minH='100vh' px='6'>
-          <Header />
+          <Header isLoginModalOpen={isLoginModalOpen} setIsLoginModalOpen={setIsLoginModalOpen}/>
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='property-details' element={ <PropertyDetails /> } >
               <Route path=":action/:propertyId" element={<AssetDetails />} />
             </Route>
-            <Route path='insert-info' element={<InsertAssets />} >
+            <Route path='insert-info' element={<InsertAssets setIsLoginModalOpen={setIsLoginModalOpen}/>} >
               {/* <Route path=":propertyId" element={<EditAsset />} /> */}
             </Route>
-            <Route path='insert-info/:propertyId' element={ <EditAsset /> } />
+            <Route path='insert-info/:propertyId' element={ <EditAsset setIsLoginModalOpen={setIsLoginModalOpen}/> } />
             <Route path="*"
                   element={ <main style={{ padding: "1rem" }}>
                               <p>There's nothing here!</p>

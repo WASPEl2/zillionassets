@@ -24,8 +24,8 @@ const ProfilePanel = ({ isLoggedIn, onLogout, userData}) => {
                   <Center>
                     <img src={profile} alt="Profile" style={{ width: '60px', height: '60px', cursor: 'pointer' }}/>
                     <Box ml='4'>
-                      <Text fontSize='15px'>{userData.role}</Text>
-                      <Text fontSize='15px'>{userData.email}</Text>
+                      {userData.role && <Text fontSize='15px'>{userData.role}</Text>}
+                      {userData.email && <Text fontSize='15px'>{userData.email}</Text>}
                     </Box>
                   </Center>
                   <VStack as='nav' spacing='8' alignItems='left' >

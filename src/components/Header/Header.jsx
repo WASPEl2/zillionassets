@@ -10,9 +10,8 @@ import ProfilePanel from './ProfilePanel';
 import logo from "../../assets/images/logo.jpg";
 
 
-const Header = () => {
+const Header = ({ isLoginModalOpen, setIsLoginModalOpen }) => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showProfilePanel, setShowProfilePanel] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);

@@ -19,7 +19,7 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { HouseContext } from "../../context/HouseContext";
 import { config } from "../../data";
 
-const EditInfo = () => {
+const EditInfo = ({ setIsLoginModalOpen }) => {
   const { propertyId } = useParams();
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState("");
@@ -534,8 +534,6 @@ const EditInfo = () => {
         {
           method: "POST",
           body: formDataToSend,
-          credentials: 'include',
-          withCredentials: true,
           headers: headers
         }
       );
@@ -583,6 +581,8 @@ const EditInfo = () => {
         setAllData("");
         setSelectedCondo("");
         window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (response.status === 401 ) {
+        alert(`Login token has expired. Plese login again`);
       } else {
         const errorResponse = await response.json();
         alert(`Error submitting form: ${errorResponse.error}`);

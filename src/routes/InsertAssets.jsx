@@ -1,8 +1,8 @@
 import InsertInfo from "../components/InsertInfo/InsertInfo"
 
-const InsertAssets = () => {
+const InsertAssets = ({setIsLoginModalOpen}) => {
   return (
-      <InsertInfo />
+      <InsertInfo setIsLoginModalOpen={setIsLoginModalOpen}/>
   )
 }
 

@@ -61,7 +61,6 @@ const HouseProvider = ({ children }) => {
                 }
 
                 const response = await fetch(url, {
-                    credentials: 'include',
                     headers: headers
                 });
                 const data = await response.json();

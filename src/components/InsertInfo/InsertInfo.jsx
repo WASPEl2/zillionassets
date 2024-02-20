@@ -12,15 +12,17 @@ import {
   Flex,
   Checkbox
 } from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
+import { UserDataContext } from "../../context/UserDataContext";
 import { BsEmojiSmile } from "react-icons/bs";
 import { config } from "../../data";
 
-const InsertInfo = () => {
+const InsertInfo = ({ setIsLoginModalOpen }) => {
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState("");
   const [condoList, setCondoList] = useState([]);
   const [selectedCondo, setSelectedCondo] = useState('');
+  const { setUserData } = useContext(UserDataContext);
 
 
   const [formData, setFormData] = useState({
@@ -495,8 +497,6 @@ const InsertInfo = () => {
         {
           method: "POST",
           body: formDataToSend,
-          credentials: 'include',
-          withCredentials: true,
           headers: headers
         }
       );
@@ -545,6 +545,9 @@ const InsertInfo = () => {
         setAllData("");
         setSelectedCondo("");
         window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (response.status === 401 ) {
+        setUserData(null)
+        setIsLoginModalOpen(true);
       } else {
         const errorResponse = await response.json();
         alert(`Error submitting form: ${errorResponse.error}`);
