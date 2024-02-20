@@ -13,6 +13,7 @@ import {
   Checkbox
 } from "@chakra-ui/react";
 import { useEffect, useState, useContext } from "react";
+import { UserDataContext } from "../../context/UserDataContext";
 import { useParams } from "react-router-dom";
 import { BsEmojiSmile } from "react-icons/bs";
 
@@ -25,7 +26,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
   const [allData, setAllData] = useState("");
   const [condoList, setCondoList] = useState([]);
   const [selectedCondo, setSelectedCondo] = useState('');
-
+  const { setUserData } = useContext(UserDataContext);
   const { getPropertyById } = useContext(HouseContext);
 
   const [formData, setFormData] = useState({
@@ -582,7 +583,8 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
         setSelectedCondo("");
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else if (response.status === 401 ) {
-        alert(`Login token has expired. Plese login again`);
+        setUserData(null)
+        setIsLoginModalOpen(true);
       } else {
         const errorResponse = await response.json();
         alert(`Error submitting form: ${errorResponse.error}`);
