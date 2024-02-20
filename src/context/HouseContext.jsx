@@ -99,7 +99,7 @@ const HouseProvider = ({ children }) => {
         // Filter the properties array based on the specified criteria
         const recommendedProperties = properties.filter(property => {
             // Exclude the property with the specified ID
-            if (property.id === propertyId) {
+            if (property.ppt_id === propertyId) {
                 return false;
             }
 

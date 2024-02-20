@@ -85,7 +85,7 @@ const PropertyDetails = () => {
 
   return (
     <>
-      {/* <ImageScrollbar data={imageData} isLoading={isLoading} /> */}
+      <ImageScrollbar data={imageData} isLoading={isLoading} />
       {propertyData && (
         <Stack direction={{ base: 'column', md: 'row' }} justify='space-between' align={{ md: 'center' }} my='2vh'>
           <Box>
