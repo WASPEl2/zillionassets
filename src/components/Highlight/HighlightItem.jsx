@@ -110,16 +110,16 @@ const HighlightItem = ({ property }) => {
 
           <Text mt="-1" fontWeight="extrabold" fontSize="14px" color="emerald.700">
             {" "}
-            {property.price !== null ? (
-              <>
-                {property.price?.toLocaleString()}
-                <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                  &nbsp;THB{property.ppt_saleorrent === "RENT" ? "/month" : ""}
-                </span>
-              </>
-            ) : (
-              "n/a"
-            )}{" "}
+              {property.price !== null ? (
+                  <>
+                      {Number(property.price).toLocaleString()} {/* Format the price with thousands separators */}
+                      <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
+                          &nbsp;THB{property.ppt_saleorrent === "RENT" ? "/month" : ""}
+                      </span>
+                  </>
+              ) : (
+                  "n/a"
+              )}{" "}
           </Text>
 
           <Divider mt="2.5" />
