@@ -729,7 +729,6 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
                 w="full"
                 value={selectedCondo}
                 onChange={handleSelectCondoChange}
-                // isSearchable
             >
                 <option value="">Select Condo</option>
                 {/* Map through condoList and render options */}

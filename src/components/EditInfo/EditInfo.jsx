@@ -106,12 +106,13 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
     try {
       setLoading(true);
       const response = await fetch(`${config.api}/zillionassets/en/asset-image/${propertyId}`);
-      const images = await response.json();
+      const data = await response.json();
       setFormData((prevData) => ({
         ...prevData,
-        ppt_media: images,
-        media_are_main:images.media_are_main
+        ppt_media: data.images,
+        mainImageIndex:data.main_media_index
       }));
+      console.log(data.main_media_index)
     } catch (error) {
       console.error('Error fetching image data:', error);
     } finally{
@@ -774,7 +775,6 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
                 w="full"
                 value={selectedCondo}
                 onChange={handleSelectCondoChange}
-                isSearchable
             >
                 <option value="">Select Condo</option>
                 {/* Map through condoList and render options */}
