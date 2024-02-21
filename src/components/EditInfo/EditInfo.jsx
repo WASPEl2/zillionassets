@@ -10,17 +10,22 @@ import {
   Grid,
   Image,
   Flex,
-  Checkbox
+  Checkbox,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 import { useEffect, useState, useContext } from "react";
 import { UserDataContext } from "../../context/UserDataContext";
-import { useParams } from "react-router-dom";
+import { Link,useParams,useNavigate  } from "react-router-dom";
 import { BsEmojiSmile } from "react-icons/bs";
 
 import { HouseContext } from "../../context/HouseContext";
 import { config } from "../../data";
 
 const EditInfo = ({ setIsLoginModalOpen }) => {
+  const navigate = useNavigate();
   const { propertyId } = useParams();
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState("");
@@ -582,6 +587,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
         setAllData("");
         setSelectedCondo("");
         window.scrollTo({ top: 0, behavior: "smooth" });
+        navigate(`/property-details/${formData.ppt_saleorrent}/${propertyId}`);
       } else if (response.status === 401 ) {
         setUserData(null)
         setIsLoginModalOpen(true);
