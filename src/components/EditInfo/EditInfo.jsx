@@ -32,7 +32,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
   const [condoList, setCondoList] = useState([]);
   const [selectedCondo, setSelectedCondo] = useState('');
   const { setUserData } = useContext(UserDataContext);
-  const { getPropertyById } = useContext(HouseContext);
+  const { purpose ,getPropertyById } = useContext(HouseContext);
 
   const [formData, setFormData] = useState({
     unit_code: "",
