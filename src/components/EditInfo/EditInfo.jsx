@@ -110,6 +110,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
       setFormData((prevData) => ({
         ...prevData,
         ppt_media: images,
+        media_are_main:images.media_are_main
       }));
     } catch (error) {
       console.error('Error fetching image data:', error);

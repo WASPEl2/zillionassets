@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { Flex, Heading, Box, Button, HStack, chakra, ButtonGroup, useBreakpointValue, Modal, ModalOverlay, ModalContent, Image } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import NavMobile from './NavMobile';
@@ -15,6 +15,40 @@ const Header = ({ isLoginModalOpen, setIsLoginModalOpen }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showProfilePanel, setShowProfilePanel] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const checkLoginStatus = async () => {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+      setIsLoggedIn(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${config.api}/zillionassets/en/check_status`, {
+        method: 'GET',
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsLoggedIn(true);
+        setUserData(data.logged_in_as);
+      } else {
+        localStorage.removeItem('jwtToken');
+        setIsLoggedIn(false);
+        setUserData(null);
+      }
+    } catch (error) {
+      console.error('Error checking login status:', error);
+      setIsLoggedIn(false);
+    }
+  };
 
   const openLoginModal = () => {
     setIsLoginModalOpen(true);
