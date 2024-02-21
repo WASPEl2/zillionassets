@@ -350,7 +350,7 @@ const PropertyDetails = () => {
               )}
               {propertyData.notes && (
                 <Text fontSize="15px" align='right'>
-                  ***{propertyData.notes}
+                  {propertyData.notes}
                 </Text>
               )}
               {propertyData.ppt_room_number && (

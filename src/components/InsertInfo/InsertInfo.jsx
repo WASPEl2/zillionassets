@@ -103,7 +103,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
         ...formData,
       };
 
-      property.ppt_title = lines[0].trim();
+      property.ppt_title = (lines[0].split("-")[0] || "").trim()
       let locationFilled = false;
       let sizeFilled = false;
       let roomFilled = false;

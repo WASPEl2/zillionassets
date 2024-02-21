@@ -106,6 +106,7 @@ const ImageScrollbar = ({ data, isLoading }) => {
                   height='auto'
                   maxHeight='70vh'
                   objectFit="contain"
+                  htmlProps={{ loading: "lazy" }}
                 />
               )}
               
