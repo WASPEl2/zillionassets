@@ -40,8 +40,8 @@ const PropertyDetails = () => {
       try {
         setIsLoading(true);
         const response = await fetch(`${config.api}/zillionassets/en/asset-image/${propertyId}`);
-        const images = await response.json();
-        setImageData(images);
+        const data = await response.json();
+        setImageData(data.images);
       } catch (error) {
         console.error('Error fetching image data:', error);
       } finally{
