@@ -592,7 +592,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             id="ppt_media"
             name="ppt_media"
             onChange={handleMediaChange}
-            accept="image/*,video/*,.zip"
+            accept="image/*,.zip"
             multiple
             mt={1}
             p={2}
