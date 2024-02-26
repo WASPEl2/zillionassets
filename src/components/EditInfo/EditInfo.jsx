@@ -105,7 +105,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
   const fetchImageData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${config.api}/zillionassets/en/asset-image/${propertyId}`);
+      const response = await fetch(`${config.api}/zillionassets/en/foredite-asset-image/${propertyId}`);
       const data = await response.json();
       setFormData((prevData) => ({
         ...prevData,

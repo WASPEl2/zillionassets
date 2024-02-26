@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Box, Icon, Flex, Image, Spinner, Text } from '@chakra-ui/react';
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import styles from './SingleProperty.module.css';
+import { config } from "../../data";
 
 const ImageScrollbar = ({ data, isLoading }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -87,29 +88,15 @@ const ImageScrollbar = ({ data, isLoading }) => {
               marginRight="2"
               display="inline-block"
             >
-              {item.media_type === 'Video' ? (
-                <video
-                  controls
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    maxHeight: '70vh',
-                    objectFit: 'contain'
-                  }}
-                  src={`data:video/mp4;base64,${item.media_data}`}
-                />
-              ) : (
-                <Image
-                  alt="property"
-                  src={`data:image/jpeg;base64,${item.media_data}`}
-                  width='100%'
-                  height='auto'
-                  maxHeight='70vh'
-                  objectFit="contain"
-                  htmlProps={{ loading: "lazy" }}
-                />
-              )}
-              
+              <Image
+                alt="property"
+                src={`${config.api}/zillionassets/en/image-data/${item.media_id}` || ''}
+                width='100%'
+                height='auto'
+                maxHeight='70vh'
+                objectFit="contain"
+                htmlProps={{ loading: "lazy" }}
+              />
             </Box>
           ))
         )}

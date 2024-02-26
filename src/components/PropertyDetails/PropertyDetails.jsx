@@ -18,7 +18,6 @@ const PropertyDetails = () => {
   const propertyData = getPropertyById(propertyId);
   const [recommendedProperties, setRecommendedProperties] = useState([]);
   const [imageData, setImageData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() =>{
@@ -38,14 +37,11 @@ const PropertyDetails = () => {
   useEffect(() => {
     const fetchImageData = async () => {
       try {
-        setIsLoading(true);
         const response = await fetch(`${config.api}/zillionassets/en/asset-image/${propertyId}`);
         const data = await response.json();
         setImageData(data.images);
       } catch (error) {
         console.error('Error fetching image data:', error);
-      } finally{
-        setIsLoading(false);
       }
     };
 
@@ -85,7 +81,7 @@ const PropertyDetails = () => {
 
   return (
     <>
-      <ImageScrollbar data={imageData} isLoading={isLoading} />
+      <ImageScrollbar data={imageData}/>
       {propertyData && (
         <Stack direction={{ base: 'column', md: 'row' }} justify='space-between' align={{ md: 'center' }} my='2vh'>
           <Box>
@@ -374,7 +370,7 @@ const PropertyDetails = () => {
               Similar Properties In {propertyData.primary_area}
           </Text>
             
-          <RecommendProperties data={recommendedProperties} isLoading={isLoading}/>
+          <RecommendProperties data={recommendedProperties}/>
           </> : <></>}
 
           <VStack

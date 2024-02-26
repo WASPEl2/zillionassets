@@ -12,7 +12,7 @@ import {
 import { Link } from 'react-router-dom';
 import PropertyItem from '../Properties/PropertyItem';
 
-const RecommendProperties = ({ data, isLoading }) => {
+const RecommendProperties = ({ data }) => {
     const scrollRef = useRef(null);
 
     useEffect(() => {
