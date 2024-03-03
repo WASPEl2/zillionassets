@@ -71,7 +71,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${config.api}/zillionassets/en/insert-asset/condo-list`
+        `${config.api}/insert-asset/condo-list`
       );
 
       if (response.ok) {
@@ -493,7 +493,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
       }
 
       const response = await fetch(
-        `${config.api}/zillionassets/en/insert-asset`,
+        `${config.api}/insert-asset`,
         {
           method: "POST",
           body: formDataToSend,

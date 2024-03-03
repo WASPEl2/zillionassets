@@ -28,7 +28,7 @@ const Header = ({ isLoginModalOpen, setIsLoginModalOpen }) => {
     }
 
     try {
-      const response = await fetch(`${config.api}/zillionassets/en/check_status`, {
+      const response = await fetch(`${config.api}/check_status`, {
         method: 'GET',
         headers: {
           "Authorization": `Bearer ${token}`
@@ -74,7 +74,7 @@ const Header = ({ isLoginModalOpen, setIsLoginModalOpen }) => {
 
         // You might not need to make a server request for logging out
         // But if you have server-side logic to handle (like token blacklisting), keep the request
-        // const response = await fetch(`${config.api}/zillionassets/en/logout`, {
+        // const response = await fetch(`${config.api}/logout`, {
         //     method: 'POST',
         //     headers: {
         //         "Authorization": `Bearer ${localStorage.getItem('jwtToken')}`

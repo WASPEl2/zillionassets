@@ -68,7 +68,7 @@ const LoginFormContent = ({ handleTabChange, setIsLoginModalOpen, setIsLoggedIn 
 
     setLoading(true);
     try {
-      const response = await fetch(`${config.api}/zillionassets/en/login`, {
+      const response = await fetch(`${config.api}/login`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -185,7 +185,7 @@ const RegisterFormContent = ({handleTabChange}) => {
     
     setLoading(true); // Set loading to true when submitting the form
     try {
-      const response = await fetch(`${config.api}/zillionassets/en/register`, {
+      const response = await fetch(`${config.api}/register`, {
         method: 'POST',
         headers: {
         "Content-Type": "application/json",

@@ -88,7 +88,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${config.api}/zillionassets/en/insert-asset/condo-list`
+        `${config.api}/insert-asset/condo-list`
       );
 
       if (response.ok) {
@@ -105,7 +105,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
   const fetchImageData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${config.api}/zillionassets/en/foredite-asset-image/${propertyId}`);
+      const response = await fetch(`${config.api}/foredite-asset-image/${propertyId}`);
       const data = await response.json();
       setFormData((prevData) => ({
         ...prevData,
@@ -538,7 +538,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
 
 
       const response = await fetch(
-        `${config.api}/zillionassets/en/insert-asset/${propertyId}`,
+        `${config.api}/insert-asset/${propertyId}`,
         {
           method: "POST",
           body: formDataToSend,

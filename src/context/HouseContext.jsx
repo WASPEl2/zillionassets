@@ -53,7 +53,7 @@ const HouseProvider = ({ children }) => {
                 if (maxPrice) queryParams.append('maxPrice', maxPrice);
                 if (purpose) queryParams.append('purpose', purpose);
                 if (searchQuery) queryParams.append('searchQuery', searchQuery);
-                const url = `${config.api}/zillionassets/en/assets-detail?${queryParams}`;
+                const url = `${config.api}/assets-detail?${queryParams}`;
 
                 const headers = {};
                 if (token) {

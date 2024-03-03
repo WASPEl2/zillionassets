@@ -90,7 +90,7 @@ const ImageScrollbar = ({ data, isLoading }) => {
             >
               <Image
                 alt="property"
-                src={`${config.api}/zillionassets/en/image-data/${item.media_id}` || ''}
+                src={`${config.api}/image-data/${item.media_id}` || ''}
                 width='100%'
                 height='auto'
                 maxHeight='70vh'

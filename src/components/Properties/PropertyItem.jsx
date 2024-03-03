@@ -25,7 +25,7 @@ const PropertyItem = ({ property }) => {
     <Flex justify="center" align="center" pl='0'>
       <Stack width="300px" bg="white" boxShadow="xl" borderRadius="xl" position="relative">
         <Image
-          src={`${config.api}/zillionassets/en/asset-main-image/${property.ppt_id}`}
+          src={`${config.api}/asset-main-image/${property.ppt_id}`}
           h="170"
           objectFit="cover"
           alt="property"

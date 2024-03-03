@@ -37,7 +37,7 @@ const PropertyDetails = () => {
   useEffect(() => {
     const fetchImageData = async () => {
       try {
-        const response = await fetch(`${config.api}/zillionassets/en/asset-image/${propertyId}`);
+        const response = await fetch(`${config.api}/asset-image/${propertyId}`);
         const data = await response.json();
         setImageData(data.images);
       } catch (error) {
