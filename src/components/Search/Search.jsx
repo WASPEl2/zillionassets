@@ -1,5 +1,5 @@
 import { Button, Flex, Heading, Input } from '@chakra-ui/react'
-import { useContext, useState} from "react";
+import { useContext, useEffect, useState} from "react";
 import { useNavigate,useLocation } from 'react-router-dom'; 
 
 import { HouseContext } from "../../context/HouseContext";
@@ -12,15 +12,17 @@ import PurposeFilter from './PurposeFilter';
 const Search = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const { purpose, type,minPrice, maxPrice,primaryArea } = useContext(HouseContext);
-
+  
+  const { searchHandler ,purpose, type,minPrice, maxPrice,primaryArea } = useContext(HouseContext);
 
   const searchParams = new URLSearchParams(location.search);
   const initialQuery = searchParams.get('search') || '';
 
   const [inputQuery, setInputQuery] = useState(initialQuery);
 
+  useEffect(() => {
+    navigate(`/?purpose=RENT`);
+  },[]);
 
   const handleSearchInputChange = (event) => {
     setInputQuery(event.target.value);
@@ -37,6 +39,7 @@ const Search = () => {
     if (primaryArea) queryParams.set('primaryArea', primaryArea);
 
     navigate(`/?${queryParams.toString()}`);
+    searchHandler();
   };
 
   return (

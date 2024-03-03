@@ -11,7 +11,7 @@ const HouseProvider = ({ children }) => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const urlSearchQuery = searchParams.get('search') || '';
-    const urlPurpose = searchParams.get('purpose') || 'RENT';
+    const urlPurpose = searchParams.get('purpose') || '';
     const urlType = searchParams.get('type') || '';
     const urlMinPrice = searchParams.get('minPrice') || '';
     const urlMaxPrice = searchParams.get('maxPrice') || '';
@@ -36,6 +36,7 @@ const HouseProvider = ({ children }) => {
 
     useEffect(() => {
         fetchData(urlSearchQuery);
+        setCurrentPage(1);
     }, [userData, urlSearchQuery, urlPurpose, urlType, urlMinPrice, urlMaxPrice, urlPrimaryArea]);
 
     useEffect(() => {
@@ -82,6 +83,7 @@ const HouseProvider = ({ children }) => {
                 }
 
                 const response = await fetch(url, {
+                    method: 'GET',
                     headers: headers
                 });
                 const data = await response.json();
@@ -102,8 +104,8 @@ const HouseProvider = ({ children }) => {
     };
 
     const searchHandler = () => {
+        fetchData(searchQuery);
         setCurrentPage(1);
-        fetchData();
     }
 
     const getPropertyById = (propertyId) => {
@@ -155,6 +157,7 @@ const HouseProvider = ({ children }) => {
             searchQuery,
             setSearchQuery,
             types,
+            searchHandler,
             isLoading,
             setCurrentPage,
             currentPage,

@@ -26,8 +26,7 @@ const PropertyDetails = () => {
         setPurpose(action);
         
     }
-    
-    
+
     const delay = setTimeout(() => {
       searchHandler();
     }, 3000)
