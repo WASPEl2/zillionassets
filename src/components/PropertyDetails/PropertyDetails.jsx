@@ -13,9 +13,9 @@ import Form from "./Form";
 import ListWithIndentation from "./ListWithIndentation";
 
 const PropertyDetails = () => {
-  const { propertyId, action } = useParams();
+  const { propertyId} = useParams();
   const { userData } = useContext(UserDataContext);
-  const { searchHandler, purpose, setPurpose, getPropertyById, getRecommendedProperties } = useContext(HouseContext);
+  const { getPropertyById, getRecommendedProperties } = useContext(HouseContext);
   const propertyData = getPropertyById(propertyId);
   const [recommendedProperties, setRecommendedProperties] = useState([]);
   const [imageData, setImageData] = useState([]);

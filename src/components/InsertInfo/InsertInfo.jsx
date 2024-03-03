@@ -176,8 +176,9 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
           property.ppt_rental_price = line
             .split(":")[1]
             .trim()
-            .replace("THB/Month", "")
-            .replace("THB / Month", "");
+            .replace("THB", "")
+            .replace("/", "")
+            .replace("Month", "");
         } else if (
           lowercasedLine.includes("amenities") ||
           lowercasedLine.includes("facilities")

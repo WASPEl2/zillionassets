@@ -105,11 +105,6 @@ const HouseProvider = ({ children }) => {
         
     };
 
-    const searchHandler = () => {
-        fetchData(searchQuery);
-        setCurrentPage(1);
-    }
-
     const getPropertyById = (propertyId) => {
         
         // Filter the properties array to find the property with the given ID
@@ -159,7 +154,6 @@ const HouseProvider = ({ children }) => {
             searchQuery,
             setSearchQuery,
             types,
-            searchHandler,
             isLoading,
             setCurrentPage,
             currentPage,
