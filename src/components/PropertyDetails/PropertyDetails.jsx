@@ -10,6 +10,7 @@ import RecommendProperties from "./RecommendProperties";
 import { HouseContext } from "../../context/HouseContext";
 import { UserDataContext } from "../../context/UserDataContext";
 import Form from "./Form";
+import ListWithIndentation from "./ListWithIndentation";
 
 const PropertyDetails = () => {
   const { propertyId, action } = useParams();
@@ -156,7 +157,7 @@ const PropertyDetails = () => {
                     {propertyData.ppt_room_description.split('\n').map((item, key) => (
                         item.trim() !== "" && (
                           <span key={key}>
-                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
+                              {item.startsWith("  ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
                               <br />
                           </span>
                         )
@@ -169,7 +170,7 @@ const PropertyDetails = () => {
                     {propertyData.ppt_description.split('\n').map((item, key) => (
                         item.trim() !== "" && (
                           <span key={key}>
-                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
+                              {item.startsWith("  ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
                               <br />
                           </span>
                         )
@@ -181,7 +182,7 @@ const PropertyDetails = () => {
                     {propertyData.ppt_optional_description.split('\n').map((item, key) => (
                         item.trim() !== "" && (
                           <span key={key}>
-                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
+                              {item.startsWith("  ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
                               <br />
                           </span>
                         )
@@ -194,31 +195,12 @@ const PropertyDetails = () => {
                 <Heading fontSize='16px'>Nearby</Heading>
             )}
             {propertyData.ppt_nearby && (
-                <Text fontSize='15px'>
-                    {propertyData.ppt_nearby.split(/[\n,]/).map((item, key) => (
-                        item.trim() !== "" && (
-                          <span key={key}>
-                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
-                              <br />
-                          </span>
-                        )
-                    ))}
-                </Text>
+              <ListWithIndentation items={propertyData.ppt_nearby} />
             )}
             {propertyData.ppt_nearbytrain && (
-                <Text fontSize='15px'>
-                    {propertyData.ppt_nearbytrain.split(/[\n,]/).map((item, key) => (
-                        item.trim() !== "" && (
-                          <span key={key}>
-                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
-                              <br />
-                          </span>
-                        )
-                    ))}
-                </Text>
+              <ListWithIndentation items={propertyData.ppt_nearbytrain} />
             )}
-            
-
+      
           </VStack>
 
         </Stack>
