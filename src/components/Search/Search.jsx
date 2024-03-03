@@ -1,28 +1,23 @@
-import { Button, Flex, Heading, Input } from '@chakra-ui/react'
-import { useContext, useEffect, useState} from "react";
-import { useNavigate,useLocation } from 'react-router-dom'; 
-
+import React, { forwardRef, useContext, useEffect, useState } from 'react';
+import { Button, Flex, Heading, Input } from '@chakra-ui/react';
+import { useNavigate, useLocation } from 'react-router-dom'; 
 import { HouseContext } from "../../context/HouseContext";
-
 import LocationFilter from "./LocationFilter";
 import PriceFilter from "./PriceFilter";
 import PropertyTypeFilter from "./PropertyTypeFilter";
 import PurposeFilter from './PurposeFilter';
 
-const Search = () => {
+// Wrap the component with forwardRef
+const Search = forwardRef((props, ref) => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const { searchHandler ,purpose, type,minPrice, maxPrice,primaryArea } = useContext(HouseContext);
+  const { searchHandler, purpose, type, minPrice, maxPrice, primaryArea } = useContext(HouseContext);
 
   const searchParams = new URLSearchParams(location.search);
   const initialQuery = searchParams.get('search') || '';
 
   const [inputQuery, setInputQuery] = useState(initialQuery);
-
-  useEffect(() => {
-    navigate(`/?purpose=RENT`);
-  },[]);
 
   const handleSearchInputChange = (event) => {
     setInputQuery(event.target.value);
@@ -43,11 +38,9 @@ const Search = () => {
   };
 
   return (
-    <Flex my='3' direction='column' borderRadius='md' bg='#fff' boxShadow='md' p='5'>
-
+    <Flex my='3' direction='column' borderRadius='md' bg='#fff' boxShadow='md' p='5' ref={ref}>
       <Heading py='2' size={{base: 'sm', md: 'md'}}>Search the price you looking for</Heading>
       <Flex pb='2' gap={{base: 3, md: 2}} direction={{base: 'column', md:'row'}} borderRadius='30'>
-        {/* Search input */}
         <Input
           placeholder='Enter keywords to find your ideal property... like "1 bedroom thong lor"'
           value={inputQuery}
@@ -55,7 +48,6 @@ const Search = () => {
         />
         <Button bgColor='emerald.800' onClick={handleSearch} p={{base: 3, md: 2}} size="100%">Search</Button>
       </Flex>
-
       <Flex gap={{base: 3, md: 2}} direction={{base: 'column', md:'row'}} borderRadius='30'>
         <LocationFilter />
         <PropertyTypeFilter />
@@ -63,7 +55,7 @@ const Search = () => {
         <PurposeFilter/>
       </Flex>
     </Flex>
-  )
-}
+  );
+});
 
-export default Search
+export default Search;

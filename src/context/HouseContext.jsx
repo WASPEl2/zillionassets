@@ -89,7 +89,9 @@ const HouseProvider = ({ children }) => {
                 const data = await response.json();
                 
                 setProperties(data.properties);
-                setHighlight(data.highlightProperties);
+                if(highlight.length === 0){
+                    setHighlight(data.highlightProperties);
+                }
                 setTypes(data.all_types);
                 setPrimaryAreas(data.primary_areas);
                 setTotalPages(Math.ceil(data.properties.length / limit));

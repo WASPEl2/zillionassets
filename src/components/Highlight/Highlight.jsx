@@ -83,7 +83,7 @@ const  Highlight = React.forwardRef((props, ref) => {
                     }}
                 >
                     {highlight.map((item, index) => (
-                        <Link to={`/property-details/${purpose}/${item.ppt_id}`} key={index} style={{ marginRight: '10px' }} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={`/property-details/${item.ppt_id}`} key={index} style={{ marginRight: '10px' }} onClick={() => window.scrollTo(0, 0)}>
                             <Box
                                 className="property-item-wrapper"
                                 transition="transform 0.2s ease"

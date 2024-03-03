@@ -20,6 +20,20 @@ import { BiBed, BiBath, BiArea, BiEdit } from "react-icons/bi";
 
 const PropertyItem = ({ property }) => {
   const { userData } = useContext(UserDataContext);
+
+  const purpose = property.ppt_saleorrent != "" ? property.ppt_saleorrent : property.ppt_selling_price ? "SALE" : "RENT";
+
+  let price = purpose === "SALE" ? property.ppt_selling_price : property.ppt_rental_price;
+  let suffix = purpose === "RENT" ? "/month" : "";
+  let isRent = purpose === "RENT";
+
+  // Fallback to generic price if specific sale or rent price is not available
+  if (!price) {
+    price = property.price;
+    suffix = isRent ? "/month" : "";
+  }
+
+  const formattedPrice = Number(price).toLocaleString();
   
   return (
     <Flex justify="center" align="center" pl='0'>
@@ -30,6 +44,7 @@ const PropertyItem = ({ property }) => {
           objectFit="cover"
           alt="property"
           borderTopStartRadius="xl"
+          loading="lazy"
         />
 
         {/* Edit icon */}
@@ -55,17 +70,10 @@ const PropertyItem = ({ property }) => {
           </Heading>
 
           <Text mt="-1" fontWeight="extrabold" fontSize="14px" color="emerald.700">
-              {" "}
-              {property.price !== null ? (
-                  <>
-                      {Number(property.price).toLocaleString()} {/* Format the price with thousands separators */}
-                      <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                          &nbsp;THB{property.ppt_saleorrent === "RENT" ? "/month" : ""}
-                      </span>
-                  </>
-              ) : (
-                  "n/a"
-              )}{" "}
+            {formattedPrice}
+            <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
+              &nbsp;THB{suffix}
+            </span>
           </Text>
 
           <Divider mt="2.5" />
