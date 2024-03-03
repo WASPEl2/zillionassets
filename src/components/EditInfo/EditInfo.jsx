@@ -574,7 +574,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
         setAllData("");
         setSelectedCondo("");
         window.scrollTo({ top: 0, behavior: "smooth" });
-        navigate(`/property-details/${formData.ppt_saleorrent}/${propertyId}`);
+        navigate(`/property-details/${propertyId}`);
       } else if (response.status === 401 ) {
         setUserData(null)
         setIsLoginModalOpen(true);

@@ -1,7 +1,7 @@
 import { Button, useBreakpointValue, Select} from '@chakra-ui/react';
 
 
-const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
+const Pagination = ({ currentPage, totalPages, setCurrentPage, scrollToHead }) => {
     const isDesktop = useBreakpointValue({ base: false, lg: true })
     
     const range = (start, end) => {
@@ -50,11 +50,13 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
     const handlePageClick = (page) => {
         if (typeof page === 'number') {
             setCurrentPage(page);
+            scrollToHead();
         }
     };
 
     const handlePageChange = (e) => {
         setCurrentPage(parseInt(e.target.value));
+        scrollToHead();
     };
 
     return (
