@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext} from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { UserDataContext } from "./UserDataContext";
 import { config } from "../data";
@@ -6,26 +7,36 @@ import { config } from "../data";
 export const HouseContext = createContext('');
 
 const HouseProvider = ({ children }) => {
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const urlSearchQuery = searchParams.get('search') || '';
+    const urlPurpose = searchParams.get('purpose') || 'RENT';
+    const urlType = searchParams.get('type') || '';
+    const urlMinPrice = searchParams.get('minPrice') || '';
+    const urlMaxPrice = searchParams.get('maxPrice') || '';
+    const urlPrimaryArea = searchParams.get('primaryArea') || '';
+
     const limit = 24;
     const { userData } = useContext(UserDataContext);
     const [properties, setProperties] = useState([]);
     const [highlight, setHighlight] = useState([]);
-    const [primaryArea, setPrimaryArea] = useState('');
     const [primaryAreas, setPrimaryAreas] = useState([]);
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
-    const [type, setType] = useState('');
     const [types, setTypes] = useState([]);
-    const [purpose, setPurpose] = useState("RENT");
-    const [searchQuery, setSearchQuery] = useState('');
+    const [primaryArea, setPrimaryArea] = useState(urlPrimaryArea);
+    const [minPrice, setMinPrice] = useState(urlMinPrice);
+    const [maxPrice, setMaxPrice] = useState(urlMaxPrice);
+    const [type, setType] = useState(urlType);
+    const [purpose, setPurpose] = useState(urlPurpose);
+    const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1); 
     const [totalPages, setTotalPages] = useState(1);
     const [currentProperties, setCurrentProperties] = useState([]);
 
     useEffect(() => {
-        fetchData(currentPage);
-    }, [userData]);
+        fetchData(urlSearchQuery);
+    }, [userData, urlSearchQuery, urlPurpose, urlType, urlMinPrice, urlMaxPrice, urlPrimaryArea]);
 
     useEffect(() => {
         updateCurrentProperties();
@@ -38,7 +49,7 @@ const HouseProvider = ({ children }) => {
         setCurrentProperties(currentProperties);
     };
 
-    const fetchData = async () => {
+    const fetchData = async (Query) => {
 
             setIsLoading(true);
 
@@ -46,14 +57,24 @@ const HouseProvider = ({ children }) => {
             try {
                 const queryParams = new URLSearchParams({
                 });
+                let newSearchQuery = Query;
+
+                const bedroomMatch = newSearchQuery.match(/(\d+)\s*(bedroom|bed)\b/i);
+                if (bedroomMatch) {
+                    const numberOfBeds = bedroomMatch[1]; // Extract the number of beds
+                    queryParams.append('bedroom', numberOfBeds);
+                    
+                    // Remove the matched bedroom pattern from the searchQuery
+                    newSearchQuery = newSearchQuery.replace(bedroomMatch[0], '').trim();
+                }
 
                 if (primaryArea) queryParams.append('primaryArea', primaryArea);
                 if (type) queryParams.append('type', type);
                 if (minPrice) queryParams.append('minPrice', minPrice);
                 if (maxPrice) queryParams.append('maxPrice', maxPrice);
                 if (purpose) queryParams.append('purpose', purpose);
-                if (searchQuery) queryParams.append('searchQuery', searchQuery);
-                const url = `${config.api}/zillionassets/en/assets-detail?${queryParams}`;
+                if (newSearchQuery) queryParams.append('searchQuery', newSearchQuery);
+                const url = `${config.api}/assets-detail?${queryParams}`;
 
                 const headers = {};
                 if (token) {
@@ -66,10 +87,7 @@ const HouseProvider = ({ children }) => {
                 const data = await response.json();
                 
                 setProperties(data.properties);
-
-                const highlightProperties = data.properties.filter(property => property.isHighlight == true);
-                setHighlight(highlightProperties);
-
+                setHighlight(data.highlightProperties);
                 setTypes(data.all_types);
                 setPrimaryAreas(data.primary_areas);
                 setTotalPages(Math.ceil(data.properties.length / limit));
@@ -137,7 +155,6 @@ const HouseProvider = ({ children }) => {
             searchQuery,
             setSearchQuery,
             types,
-            searchHandler,
             isLoading,
             setCurrentPage,
             currentPage,

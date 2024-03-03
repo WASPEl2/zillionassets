@@ -11,6 +11,7 @@ import AssetDetails from './components/PropertyDetails/PropertyDetails';
 import InsertAssets from './routes/InsertAssets';
 import EditAsset from './routes/EditAsset'
 import UserDataProvider from './context/UserDataContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -22,15 +23,21 @@ const App = () => {
           <Header isLoginModalOpen={isLoginModalOpen} setIsLoginModalOpen={setIsLoginModalOpen}/>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path='property-details' element={ <PropertyDetails /> } >
+            <Route path='property-details' element={<PropertyDetails />}>
               <Route path=":action/:propertyId" element={<AssetDetails />} />
             </Route>
-            <Route path='insert-info' element={<InsertAssets setIsLoginModalOpen={setIsLoginModalOpen}/>} >
-              {/* <Route path=":propertyId" element={<EditAsset />} /> */}
-            </Route>
-            <Route path='insert-info/:propertyId' element={ <EditAsset setIsLoginModalOpen={setIsLoginModalOpen}/> } />
+            <Route path='insert-info' element={
+              <ProtectedRoute>
+                <InsertAssets setIsLoginModalOpen={setIsLoginModalOpen}/>
+              </ProtectedRoute>
+            }/>
+            <Route path='insert-info/:propertyId' element={
+              <ProtectedRoute>
+                <EditAsset setIsLoginModalOpen={setIsLoginModalOpen}/>
+              </ProtectedRoute>
+            }/>
             <Route path="*"
-                  element={ <main style={{ padding: "1rem" }}>
+                  element={<main style={{ padding: "1rem" }}>
                               <p>There's nothing here!</p>
                             </main>
                           }
@@ -43,4 +50,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;

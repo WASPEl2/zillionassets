@@ -88,7 +88,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${config.api}/zillionassets/en/insert-asset/condo-list`
+        `${config.api}/insert-asset/condo-list`
       );
 
       if (response.ok) {
@@ -105,7 +105,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
   const fetchImageData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${config.api}/zillionassets/en/foredite-asset-image/${propertyId}`);
+      const response = await fetch(`${config.api}/foredite-asset-image/${propertyId}`);
       const data = await response.json();
       setFormData((prevData) => ({
         ...prevData,
@@ -197,9 +197,9 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
         } else if (lowercasedLine.includes("room") && !roomFilled) {
           property.ppt_room_description = (line.split(":")[1] || "").trim();
           const bedroomMatch =
-            property.ppt_room_description.match(/(\d+)\s*Bedroom/i);
+            property.ppt_room_description.match(/(\d+)\s*Bed/i);
           const bathroomMatch =
-            property.ppt_room_description.match(/(\d+)\s*Bathroom/i);
+            property.ppt_room_description.match(/(\d+)\s*Bath/i);
           property.ppt_bedroom = bedroomMatch ? bedroomMatch[1] : "";
           property.ppt_showerroom = bathroomMatch ? bathroomMatch[1] : "";
           if (property.ppt_room_description !== "") roomFilled = true;
@@ -305,8 +305,8 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
     // Check if the updated field is 'ppt_room_description'
     else if (name === "ppt_room_description") {
       // Use regular expression to find numbers followed by 'Bedroom' or 'Bathroom'
-      const bedroomMatch = value.match(/(\d+)\s*Bedroom/i);
-      const bathroomMatch = value.match(/(\d+)\s*Bathroom/i);
+      const bedroomMatch = value.match(/(\d+)\s*Bed/i);
+      const bathroomMatch = value.match(/(\d+)\s*Bath/i);
 
       // Update the 'ppt_bedroom' and 'ppt_showerroom' fields if matches are found
       setFormData((prevData) => ({
@@ -538,7 +538,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
 
 
       const response = await fetch(
-        `${config.api}/zillionassets/en/insert-asset/${propertyId}`,
+        `${config.api}/insert-asset/${propertyId}`,
         {
           method: "POST",
           body: formDataToSend,

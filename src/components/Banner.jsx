@@ -23,18 +23,17 @@ const Banner = ({onGetStartedClick}) => {
           flexGrow='1'
           px={{ sm: "6", md: "10" }}
           py={{ sm: '8',  md: "16" }}
-          bg="emerald.700"
+          bg="emerald.600"
           justify="center"
           align="left"
           borderRadius="xl"
+          maxW={{ base: "100%", lg: "70%" }}
         >
           <Heading fontSize={{ base: "xl", sm: "2xl", md: "3xl" }}>
             Find You Dream House With us.
           </Heading>
           <Text fontSize="sm">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum,
-            fugit illo? Delectus, voluptas unde quae cupiditate at amet beatae
-            totam!
+            Discover your perfect home with our expansive selection of properties. From cozy apartments to luxurious estates, our expert team is dedicated to helping you find the home of your dreams. Start your journey to homeownership with us today!
           </Text>
           <Box pt="3" pb="8" >
             <Button bg="emerald.900" onClick={onGetStartedClick}>Get Started</Button>
