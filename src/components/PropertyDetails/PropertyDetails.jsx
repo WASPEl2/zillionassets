@@ -154,7 +154,12 @@ const PropertyDetails = () => {
             {propertyData.ppt_room_description && (
                 <Text fontSize='15px'>
                     {propertyData.ppt_room_description.split('\n').map((item, key) => (
-                        <span key={key}>{item}<br /></span>
+                        item.trim() !== "" && (
+                          <span key={key}>
+                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
+                              <br />
+                          </span>
+                        )
                     ))}
                     <br />
                 </Text>
@@ -162,14 +167,24 @@ const PropertyDetails = () => {
             {propertyData.ppt_description && (
                 <Text fontSize='15px'>
                     {propertyData.ppt_description.split('\n').map((item, key) => (
-                        <span key={key}>{item}<br /></span>
+                        item.trim() !== "" && (
+                          <span key={key}>
+                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
+                              <br />
+                          </span>
+                        )
                     ))}
                 </Text>
             )}
             {propertyData.ppt_optional_description && (
                 <Text fontSize='15px'>
                     {propertyData.ppt_optional_description.split('\n').map((item, key) => (
-                        <span key={key}>{item}<br /></span>
+                        item.trim() !== "" && (
+                          <span key={key}>
+                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
+                              <br />
+                          </span>
+                        )
                     ))}
                 </Text>
             )}
@@ -181,14 +196,24 @@ const PropertyDetails = () => {
             {propertyData.ppt_nearby && (
                 <Text fontSize='15px'>
                     {propertyData.ppt_nearby.split(/[\n,]/).map((item, key) => (
-                        <span key={key}>{item}<br /></span>
+                        item.trim() !== "" && (
+                          <span key={key}>
+                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
+                              <br />
+                          </span>
+                        )
                     ))}
                 </Text>
             )}
             {propertyData.ppt_nearbytrain && (
                 <Text fontSize='15px'>
                     {propertyData.ppt_nearbytrain.split(/[\n,]/).map((item, key) => (
-                        <span key={key}>{item}<br /></span>
+                        item.trim() !== "" && (
+                          <span key={key}>
+                              {item.startsWith(" ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
+                              <br />
+                          </span>
+                        )
                     ))}
                 </Text>
             )}
