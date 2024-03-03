@@ -6,23 +6,27 @@ import Highlight from '../components/Highlight/Highlight';
 
 const Home = () => {
   const highlightRef = useRef(null);
+  const headRef = useRef(null);
 
   const handleGetStartedClick = () => {
     console.log('Get Started button clicked');
     if (highlightRef.current) {
-      console.log('Highlight ref exists, scrolling...');
       highlightRef.current.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      console.log('Highlight ref is not yet available');
-    }
+    } 
   };
+
+  const scrollToHead = () => { 
+        if (headRef.current) {
+            headRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
   return (
     <>
       <Banner onGetStartedClick={handleGetStartedClick} />
       <Highlight ref={highlightRef} />
-      <Search />
-      <PropertyList />
+      <Search ref={headRef}/>
+      <PropertyList scrollToHead={scrollToHead}/>
     </>
   );
 };

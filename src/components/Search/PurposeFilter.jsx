@@ -15,7 +15,7 @@ const PurposeFilter = () => {
   };
 
   return (
-    <Select defaultValue={purpose} onChange={purposeHandler}>
+    <Select placeholder='select purpose' defaultValue={purpose} onChange={purposeHandler}>
       {purposes.map((text, index) =>
           <option key={index}>{text.value}</option>
         )

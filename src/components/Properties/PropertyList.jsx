@@ -1,25 +1,33 @@
-import { Center, Button, Grid, Heading, Stack, Flex, Spinner, Text,Box } from '@chakra-ui/react';
-import { useContext } from "react";
+import { Center, Button, Grid, Heading, Stack, Flex, Spinner, Text, Box } from '@chakra-ui/react';
+import { useContext, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 
 import { HouseContext } from "../../context/HouseContext";
 import PropertyItem from './PropertyItem';
-import Pagination from './Pagination'
+import Pagination from './Pagination';
 
-const PropertyList = () => {
-    const { purpose, properties, isLoading, currentPage, setCurrentPage, totalPages } = useContext(HouseContext);
+const PropertyList = ({scrollToHead}) => {
+    const { properties, isLoading, currentPage, setCurrentPage, totalPages } = useContext(HouseContext);
 
+    // Adjusting nextPage and prevPage functions to include scrolling
     const nextPage = () => {
         if (currentPage < totalPages) {
             setCurrentPage(currentPage + 1);
+            scrollToHead();
         }
     };
 
     const prevPage = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
+            scrollToHead();
         }
     };
+
+    // Use effect to handle page changes via Pagination component
+    useEffect(() => {
+        scrollToHead();
+    }, [currentPage]);
 
     if (properties.length === 0 && !isLoading) {
         return (
@@ -32,17 +40,16 @@ const PropertyList = () => {
     }
 
     return (
-        <>  {isLoading ?
+        <>
+            {isLoading ?
                 <Flex justify="center" align="center" h='50vh'>
                     <Spinner size="xl" color="emerald.800" />
-                    <Text>
-                        &nbsp;&nbsp;Loading properties data
-                    </Text>
+                    <Text>&nbsp;&nbsp;Loading properties data</Text>
                 </Flex>
             : 
-                <Grid my='3' rowGap='4' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))' >
+                <Grid my='3' rowGap='4' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))'>
                     {properties.map((item, index) => (
-                        <Link to={`/property-details/${purpose}/${item.ppt_id}`} key={index} onClick={() => window.scrollTo(0, 0)}>
+                        <Link to={`/property-details/${item.ppt_id}`} key={index} onClick={() => window.scrollTo(0, 0)}>
                             <Box
                                 className="property-item-wrapper"
                                 transition="transform 0.2s ease"

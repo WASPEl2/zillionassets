@@ -58,7 +58,7 @@ const priceHandler = (event) => {
 
   return (
     <FormControl ref={customPriceRef}>
-      <Select placeholder="Select Price" value={selectedPrice} onChange={priceHandler}>
+      <Select placeholder="select price" value={selectedPrice} onChange={priceHandler}>
         {prices.map((price, index) =>
           <option key={index} value={price.text}>{price.text}</option>
         )}

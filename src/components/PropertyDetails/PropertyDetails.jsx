@@ -21,18 +21,6 @@ const PropertyDetails = () => {
   const [imageData, setImageData] = useState([]);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() =>{
-    if (action) {
-        setPurpose(action);
-    }
-
-    const delay = setTimeout(() => {
-      searchHandler();
-    }, 3000)
-
-    return () => clearTimeout(delay);
-  }, [purpose]);
-
   useEffect(() => {
     const fetchImageData = async () => {
       try {
@@ -65,7 +53,24 @@ const PropertyDetails = () => {
         
   }, [propertyData]);
 
+  const renderPropertyType = () => {
+    const { ppt_rental_price, ppt_selling_price } = propertyData;
+    let propertyType = "";
 
+    if (ppt_rental_price) {
+      propertyType += "RENT";
+    }
+
+    if (ppt_rental_price && ppt_selling_price) {
+      propertyType += " / ";
+    }
+
+    if (ppt_selling_price) {
+      propertyType += "SALE";
+    }
+
+    return propertyType;
+  };
 
   // Function to format the time
   const formatTime = (timeString) => {
@@ -105,25 +110,36 @@ const PropertyDetails = () => {
           <HStack>
             <Text px='3' borderRadius='full' bg='green.300' overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">{propertyData.ppt_type}</Text>
             <Text px='3' borderRadius='full' bg='purple.300' overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">{propertyData.primary_area}</Text>
-            <Text px='3' borderRadius='full' bg='orange.300' overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">{propertyData.ppt_saleorrent}</Text>
+            <Text px='3' borderRadius='full' bg='orange.300' overflow="hidden" whiteSpace="nowrap" textOverflow="ellipsis">
+              {renderPropertyType()}
+            </Text>
           </HStack>
         </Stack>
       )}
 
       {propertyData && (
+        <>
         <Text mt="-1" fontWeight="extrabold" fontSize="14px" color="emerald.700">
-          {" "}
-          {propertyData.price !== null ? (
+          {propertyData.ppt_rental_price && (
               <>
-                  {Number(propertyData.price).toLocaleString()} {/* Format the price with thousands separators */}
+                  {Number(propertyData.ppt_rental_price).toLocaleString()}
                   <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
-                      &nbsp;THB{purpose === "RENT" ? "/month" : ""}
+                      &nbsp;THB/month
                   </span>
               </>
-          ) : (
-              "n/a"
           )}{" "}
         </Text>
+        <Text mt="-1" fontWeight="extrabold" fontSize="14px" color="emerald.700">
+          {propertyData.ppt_selling_price && (
+              <>
+                  {Number(propertyData.ppt_selling_price).toLocaleString()}
+                  <span style={{ fontSize: 12, color: "grey", fontWeight: "normal" }}>
+                      &nbsp;THB
+                  </span>
+              </>
+          )}{" "}
+        </Text>
+        </>
       )}
 
       {propertyData && (

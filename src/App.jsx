@@ -24,7 +24,7 @@ const App = () => {
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='property-details' element={<PropertyDetails />}>
-              <Route path=":action/:propertyId" element={<AssetDetails />} />
+              <Route path=":propertyId" element={<AssetDetails />} />
             </Route>
             <Route path='insert-info' element={
               <ProtectedRoute>
