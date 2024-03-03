@@ -27,7 +27,7 @@ const Banner = ({onGetStartedClick}) => {
           justify="center"
           align="left"
           borderRadius="xl"
-          maxW={{ base: "100%", lg: "70%" }}
+          maxW={{ base: "100%", lg: "65%" }}
         >
           <Heading fontSize={{ base: "xl", sm: "2xl", md: "3xl" }}>
             Find You Dream House With us.
