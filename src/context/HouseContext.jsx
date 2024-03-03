@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext} from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { UserDataContext } from "./UserDataContext";
 import { config } from "../data";
@@ -6,26 +7,36 @@ import { config } from "../data";
 export const HouseContext = createContext('');
 
 const HouseProvider = ({ children }) => {
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const urlSearchQuery = searchParams.get('search') || '';
+    const urlPurpose = searchParams.get('purpose') || 'RENT';
+    const urlType = searchParams.get('type') || '';
+    const urlMinPrice = searchParams.get('minPrice') || '';
+    const urlMaxPrice = searchParams.get('maxPrice') || '';
+    const urlPrimaryArea = searchParams.get('primaryArea') || '';
+
     const limit = 24;
     const { userData } = useContext(UserDataContext);
     const [properties, setProperties] = useState([]);
     const [highlight, setHighlight] = useState([]);
-    const [primaryArea, setPrimaryArea] = useState('');
     const [primaryAreas, setPrimaryAreas] = useState([]);
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
-    const [type, setType] = useState('');
     const [types, setTypes] = useState([]);
-    const [purpose, setPurpose] = useState("RENT");
-    const [searchQuery, setSearchQuery] = useState('');
+    const [primaryArea, setPrimaryArea] = useState(urlPrimaryArea);
+    const [minPrice, setMinPrice] = useState(urlMinPrice);
+    const [maxPrice, setMaxPrice] = useState(urlMaxPrice);
+    const [type, setType] = useState(urlType);
+    const [purpose, setPurpose] = useState(urlPurpose);
+    const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1); 
     const [totalPages, setTotalPages] = useState(1);
     const [currentProperties, setCurrentProperties] = useState([]);
 
     useEffect(() => {
-        fetchData(currentPage);
-    }, [userData]);
+        fetchData(urlSearchQuery);
+    }, [userData, urlSearchQuery, urlPurpose, urlType, urlMinPrice, urlMaxPrice, urlPrimaryArea]);
 
     useEffect(() => {
         updateCurrentProperties();
@@ -38,7 +49,7 @@ const HouseProvider = ({ children }) => {
         setCurrentProperties(currentProperties);
     };
 
-    const fetchData = async () => {
+    const fetchData = async (Query) => {
 
             setIsLoading(true);
 
@@ -46,7 +57,7 @@ const HouseProvider = ({ children }) => {
             try {
                 const queryParams = new URLSearchParams({
                 });
-                let newSearchQuery = searchQuery;
+                let newSearchQuery = Query;
 
                 const bedroomMatch = searchQuery.match(/(\d+)\s*Bed/i);
                 if (bedroomMatch) {
@@ -63,6 +74,7 @@ const HouseProvider = ({ children }) => {
                 if (maxPrice) queryParams.append('maxPrice', maxPrice);
                 if (purpose) queryParams.append('purpose', purpose);
                 if (newSearchQuery) queryParams.append('searchQuery', newSearchQuery);
+                console.log("newSearchQuery",newSearchQuery)
                 const url = `${config.api}/assets-detail?${queryParams}`;
 
                 const headers = {};
@@ -147,7 +159,6 @@ const HouseProvider = ({ children }) => {
             searchQuery,
             setSearchQuery,
             types,
-            searchHandler,
             isLoading,
             setCurrentPage,
             currentPage,
