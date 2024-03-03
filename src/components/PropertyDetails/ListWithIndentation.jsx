@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, Box } from '@chakra-ui/react';
 
 const ListWithIndentation = ({ items }) => {
-  return items.split(/[\n,]/).map((item, key) => {
+  return items.split(/[\n]/).map((item, key) => {
     const trimmedItem = item.trim();
     if (trimmedItem === "") return null;
 

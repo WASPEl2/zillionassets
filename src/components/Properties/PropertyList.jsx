@@ -23,12 +23,6 @@ const PropertyList = ({scrollToHead}) => {
             scrollToHead();
         }
     };
-
-    // Use effect to handle page changes via Pagination component
-    useEffect(() => {
-        scrollToHead();
-    }, [currentPage]);
-
     if (properties.length === 0 && !isLoading) {
         return (
             <Stack maxH='400px'>
@@ -67,7 +61,7 @@ const PropertyList = ({scrollToHead}) => {
                     Previous Page
                 </Button>
                 <div style={{ margin: '0 8px' }}>
-                    <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+                    <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} scrollToHead={scrollToHead}/>
                 </div>
                 <Button onClick={nextPage} disabled={currentPage === totalPages} size='sm' variant='outline'>
                     Next Page

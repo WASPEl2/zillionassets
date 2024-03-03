@@ -167,41 +167,13 @@ const PropertyDetails = () => {
                 <Heading fontSize='16px'>Description</Heading>
             )}
             {propertyData.ppt_room_description && (
-                <Text fontSize='15px'>
-                    {propertyData.ppt_room_description.split('\n').map((item, key) => (
-                        item.trim() !== "" && (
-                          <span key={key}>
-                              {item.startsWith("  ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
-                              <br />
-                          </span>
-                        )
-                    ))}
-                    <br />
-                </Text>
+                <ListWithIndentation items={propertyData.ppt_room_description} />
             )}
             {propertyData.ppt_description && (
-                <Text fontSize='15px'>
-                    {propertyData.ppt_description.split('\n').map((item, key) => (
-                        item.trim() !== "" && (
-                          <span key={key}>
-                              {item.startsWith("  ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
-                              <br />
-                          </span>
-                        )
-                    ))}
-                </Text>
+                <ListWithIndentation items={propertyData.ppt_description} />
             )}
             {propertyData.ppt_optional_description && (
-                <Text fontSize='15px'>
-                    {propertyData.ppt_optional_description.split('\n').map((item, key) => (
-                        item.trim() !== "" && (
-                          <span key={key}>
-                              {item.startsWith("  ") ? <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{item}</> : item}
-                              <br />
-                          </span>
-                        )
-                    ))}
-                </Text>
+                <ListWithIndentation items={propertyData.ppt_optional_description} />
             )}
 
             <Text></Text>
@@ -244,7 +216,7 @@ const PropertyDetails = () => {
               p="3"
             >
               <Text>Purpose</Text>
-              <Text fontWeight="bold">{propertyData.ppt_saleorrent}</Text>
+              <Text fontWeight="bold">{renderPropertyType()}</Text>
             </Flex>
             {propertyData.ppt_floor_unit && (
               <Flex
@@ -302,7 +274,7 @@ const PropertyDetails = () => {
                 borderColor="gray.100"
                 p="3"
               >
-                <Text display={{ base: 'none', lg: 'block' }}>furnishing Status</Text>
+                <Text display={{ base: 'none', xl: 'block' }}>furnishing Status</Text>
                 <Text fontWeight="bold">{propertyData.ppt_decoration}</Text>
               </Flex>
             )}
@@ -342,7 +314,8 @@ const PropertyDetails = () => {
           </Box>
           <VStack my='4vh' align='right' maxW='100%'  borderBottom="2px" borderColor="gray.200">
             <Text fontSize="15px" align='right'>
-              {propertyData.partner_type === 'Agent' ? 'Acr' : 'Ocr'} {propertyData.partner_name}
+              {propertyData.partner_type === 'Agent' ? 'Acr' : 'Ocr'}{' '}
+              {propertyData.partner_name.startsWith('K.') ? propertyData.partner_name : `K. ${propertyData.partner_name}`}
             </Text>
             {userData && userData.role == "Admin" &&   <>
               {propertyData.partner_number && (
