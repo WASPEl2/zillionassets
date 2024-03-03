@@ -46,7 +46,7 @@ const Search = () => {
       <Flex pb='2' gap={{base: 3, md: 2}} direction={{base: 'column', md:'row'}} borderRadius='30'>
         {/* Search input */}
         <Input
-          placeholder="Enter keywords to find your ideal property..."
+          placeholder='Enter keywords to find your ideal property... like "1 bedroom thong lor"'
           value={inputQuery}
           onChange={handleSearchInputChange}
         />

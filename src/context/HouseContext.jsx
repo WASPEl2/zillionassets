@@ -59,13 +59,13 @@ const HouseProvider = ({ children }) => {
                 });
                 let newSearchQuery = Query;
 
-                const bedroomMatch = searchQuery.match(/(\d+)\s*Bed/i);
+                const bedroomMatch = newSearchQuery.match(/(\d+)\s*(bedroom|bed)\b/i);
                 if (bedroomMatch) {
                     const numberOfBeds = bedroomMatch[1]; // Extract the number of beds
                     queryParams.append('bedroom', numberOfBeds);
                     
                     // Remove the matched bedroom pattern from the searchQuery
-                    newSearchQuery = searchQuery.replace(/(\d+)\s*Bed/i, '').trim();
+                    newSearchQuery = newSearchQuery.replace(bedroomMatch[0], '').trim();
                 }
 
                 if (primaryArea) queryParams.append('primaryArea', primaryArea);
@@ -74,7 +74,6 @@ const HouseProvider = ({ children }) => {
                 if (maxPrice) queryParams.append('maxPrice', maxPrice);
                 if (purpose) queryParams.append('purpose', purpose);
                 if (newSearchQuery) queryParams.append('searchQuery', newSearchQuery);
-                console.log("newSearchQuery",newSearchQuery)
                 const url = `${config.api}/assets-detail?${queryParams}`;
 
                 const headers = {};
