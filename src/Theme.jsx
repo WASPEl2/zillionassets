@@ -68,9 +68,9 @@ export const theme = extendTheme({
   colors: {
     emerald: {
       200: '#b5fddf',
-      // 300: '#7bfac7',
-      // 400: '#3beda7',
-      // 500: '#12d589',
+      300: '#7bfac7',
+      400: '#3beda7',
+      500: '#12d589',
       600: '#08b16f',
       700: '#0a8b59',
       800: '#0e6d49',
