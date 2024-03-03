@@ -205,7 +205,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
           lowercasedLine.includes("ocr") ||
           lowercasedLine.includes("acr")
         ) {
-          const [key, value] = line.split(":");
+          const [key, value] = line.replace(":","").split(".");
           property.partner_name = value.trim() || "";
           property.partner_type = key.trim().includes("ACr")
             ? "Agent"

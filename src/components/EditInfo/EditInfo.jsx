@@ -210,8 +210,9 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
           property.ppt_rental_price = line
             .split(":")[1]
             .trim()
-            .replace("THB/Month", "")
-            .replace("THB / Month", "");
+            .replace("THB", "")
+            .replace("Month", "")
+            .replace("/", "");
         } else if (
           lowercasedLine.includes("amenities") ||
           lowercasedLine.includes("facilities")
@@ -240,7 +241,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
           lowercasedLine.includes("ocr") ||
           lowercasedLine.includes("acr")
         ) {
-          const [key, value] = line.split(":");
+          const [key, value] = line.replace(":","").split(".");
           property.partner_name = value.trim() || "";
           property.partner_type = key.trim().includes("ACr")
             ? "Agent"
