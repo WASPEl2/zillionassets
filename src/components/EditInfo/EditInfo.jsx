@@ -27,6 +27,8 @@ import { config } from "../../data";
 const EditInfo = ({ setIsLoginModalOpen }) => {
   const navigate = useNavigate();
   const { propertyId } = useParams();
+  const [pptMedia, setPptMedia] = useState([]);
+  const [mainImageIndex, setMainImageIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState("");
   const [condoList, setCondoList] = useState([]);
@@ -61,8 +63,6 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
     ppt_showerroom: "",
     ppt_view: "",
     ppt_petfriendly: "",
-    ppt_media: [],
-    mainImageIndex: null,
     partner_name: "",
     partner_type: "",
     partner_line: "",
@@ -107,12 +107,8 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
       setLoading(true);
       const response = await fetch(`${config.api}/foredite-asset-image/${propertyId}`);
       const data = await response.json();
-      setFormData((prevData) => ({
-        ...prevData,
-        ppt_media: data.images,
-        mainImageIndex:data.main_media_index
-      }));
-      console.log(data.main_media_index)
+      setPptMedia((prevMedia) => [...prevMedia, ...data.images]);
+      setMainImageIndex(data.main_media_index);
     } catch (error) {
       console.error('Error fetching image data:', error);
     } finally{
@@ -320,10 +316,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
 
   const handleMediaChange = (e) => {
     const files = e.target.files;
-    setFormData((prevData) => ({
-      ...prevData,
-      ppt_media: [...prevData.ppt_media, ...files],
-    }));
+    setPptMedia((prevMedia) => [...prevMedia, ...files]);
   };
 
   const handleSelectCondoChange = (e) => {
@@ -349,26 +342,16 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
   };
 
   const handleRemoveMedia = (index) => {
-      const isConfirmed = window.confirm("Are you sure you want to delete this media?");
-      if (!isConfirmed) {
-          return;
-      }
+    const isConfirmed = window.confirm("Are you sure you want to delete this media?");
+    if (!isConfirmed) {
+      return;
+    }
 
-      setFormData((prevData) => {
-          const updatedMedia = [...prevData.ppt_media];
-          updatedMedia.splice(index, 1); 
-          return {
-              ...prevData,
-              ppt_media: updatedMedia,
-          };
-      });
+    setPptMedia((prevMedia) => prevMedia.filter((_, i) => i !== index));
   };
 
   const handleSelectMainImage = (index) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      mainImageIndex: index,
-    }));
+    setMainImageIndex(index);
   };
 
   const handleSubmit = async (e) => {
@@ -404,12 +387,12 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
       }
     }
 
-    if (!formData.ppt_media.length) {
+    if (!pptMedia.length) {
       alert("Please upload at least one image");
       return;
     }
 
-    if (formData.mainImageIndex === null && formData.ppt_media.length > formData.mainImageIndex) {
+    if (mainImageIndex === null || pptMedia.length < mainImageIndex) {
       alert("Please select a main image");
       return;
     }
@@ -505,11 +488,14 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
 
       // Append all fields from the state formData to formDataToSend
       Object.entries(formData).forEach(([key, value]) => {
+        if (key === "ppt_media" || key === "mainImageIndex") return; // Skip ppt_media and mainImageIndex
         formDataToSend.append(key, value);
       });
 
+      formDataToSend.append("mainImageIndex", mainImageIndex);
+
       // Append each file in ppt_image array to formDataToSend
-      formData.ppt_media.forEach((file, index) => {
+      pptMedia.forEach((file, index) => {
           let mediaData;
           let dotName;
           let media_type;
@@ -576,8 +562,6 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
           ppt_showerroom: "",
           ppt_view: "",
           ppt_petfriendly: "",
-          ppt_media: [],
-          mainImageIndex: null,
           partner_name: "",
           partner_type: "",
           partner_line: "",
@@ -649,20 +633,20 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
             w="full"
           />
         </FormControl>
-        {formData.ppt_media.length !== 0 ? (
+        {pptMedia.length !== 0 ? (
             <Box mb={4}>
                 <FormLabel htmlFor="mainImage" mb={2} fontSize="sm" fontWeight="medium" color="gray.700">
                 Select Main Image
                 </FormLabel>
                 <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-                {formData.ppt_media.map((file, index) => (
+                {pptMedia.map((file, index) => (
                     <Box
                     key={index}
                     position="relative"
                     cursor="pointer"
                     onClick={() => handleSelectMainImage(index)}
                     >
-                      {formData.mainImageIndex === index && (
+                      {mainImageIndex === index && (
                       <Flex
                           w='full'
                           h='full'

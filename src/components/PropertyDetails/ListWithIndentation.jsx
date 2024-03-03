@@ -7,7 +7,7 @@ const ListWithIndentation = ({ items }) => {
     if (trimmedItem === "") return null;
 
     const leadingSpaces = item.length - item.trimStart().length;
-    const indentSize = leadingSpaces * 4; // Assuming each space is equivalent to 4px indentation.
+    const indentSize = leadingSpaces > 1 ? leadingSpaces * 4 : 0; // Assuming each space is equivalent to 4px indentation.
 
     return (
       <Box key={key} ml={`${indentSize}px`}>

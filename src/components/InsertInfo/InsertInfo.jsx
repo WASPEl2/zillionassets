@@ -18,6 +18,8 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { config } from "../../data";
 
 const InsertInfo = ({ setIsLoginModalOpen }) => {
+  const [pptMedia, setPptMedia] = useState([]);
+  const [mainImageIndex, setMainImageIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState("");
   const [condoList, setCondoList] = useState([]);
@@ -53,7 +55,6 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
     ppt_view: "",
     ppt_petfriendly: "",
     ppt_media: [],
-    mainImageIndex: null,
     partner_name: "",
     partner_type: "",
     partner_line: "",
@@ -283,11 +284,8 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
   };
 
   const handleMediaChange = (e) => {
-    const files = e.target.files;
-    setFormData((prevData) => ({
-      ...prevData,
-      ppt_media: [...prevData.ppt_media, ...files],
-    }));
+    const files = Array.from(e.target.files);
+    setPptMedia((prevMedia) => [...prevMedia, ...files]);
   };
 
   const handleSelectCondoChange = (e) => {
@@ -313,26 +311,16 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
   };
 
   const handleRemoveMedia = (index) => {
-      const isConfirmed = window.confirm("Are you sure you want to delete this media?");
-      if (!isConfirmed) {
-          return;
-      }
+    const isConfirmed = window.confirm("Are you sure you want to delete this media?");
+    if (!isConfirmed) {
+      return;
+    }
 
-      setFormData((prevData) => {
-          const updatedMedia = [...prevData.ppt_media];
-          updatedMedia.splice(index, 1); 
-          return {
-              ...prevData,
-              ppt_media: updatedMedia,
-          };
-      });
+    setPptMedia((prevMedia) => prevMedia.filter((_, i) => i !== index));
   };
 
   const handleSelectMainImage = (index) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      mainImageIndex: index,
-    }));
+    setMainImageIndex(index);
   };
 
   const handleSubmit = async (e) => {
@@ -368,12 +356,12 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
       }
     }
 
-    if (!formData.ppt_media.length) {
+    if (!pptMedia.length) {
       alert("Please upload at least one image");
       return;
     }
 
-    if (formData.mainImageIndex === null) {
+    if (mainImageIndex === null || pptMedia.length < mainImageIndex) {
       alert("Please select a main image");
       return;
     }
@@ -469,11 +457,14 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
 
       // Append all fields from the state formData to formDataToSend
       Object.entries(formData).forEach(([key, value]) => {
+        if (key === "ppt_media" || key === "mainImageIndex") return; // Skip ppt_media and mainImageIndex
         formDataToSend.append(key, value);
       });
 
+      formDataToSend.append("mainImageIndex", mainImageIndex);
+
       // Append each file in ppt_image array to formDataToSend
-      formData.ppt_media.forEach((file, index) => {
+      pptMedia.forEach((file, index) => {
         const fileType = file.type.startsWith("image/")
           ? "image"
           : file.type.startsWith("video/")
@@ -531,7 +522,6 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
           ppt_view: "",
           ppt_petfriendly: "",
           ppt_media: [],
-          mainImageIndex: null,
           partner_name: "",
           partner_type: "",
           partner_line: "",
@@ -544,6 +534,8 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
         });
         setAllData("");
         setSelectedCondo("");
+        setMainImageIndex(null);
+        setPptMedia([]);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else if (response.status === 401 ) {
         setUserData(null)
@@ -602,20 +594,20 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             w="full"
           />
         </FormControl>
-        {formData.ppt_media.length !== 0 ? (
+        {pptMedia.length !== 0 ? (
             <Box mb={4}>
                 <FormLabel htmlFor="mainImage" mb={2} fontSize="sm" fontWeight="medium" color="gray.700">
                 Select Main Image
                 </FormLabel>
                 <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-                {formData.ppt_media.map((file, index) => (
+                {pptMedia.map((file, index) => (
                     <Box
                     key={index}
                     position="relative"
                     cursor="pointer"
                     onClick={() => handleSelectMainImage(index)}
                     >
-                      {formData.mainImageIndex === index && (
+                      {mainImageIndex === index && (
                       <Flex
                           w='full'
                           h='full'
