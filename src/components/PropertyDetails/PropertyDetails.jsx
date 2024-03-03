@@ -22,9 +22,8 @@ const PropertyDetails = () => {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() =>{
-    if (action === "SALE") {
+    if (action) {
         setPurpose(action);
-        
     }
 
     const delay = setTimeout(() => {

@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && pm2 start ecosystem.config.cjs --env production",
-    "restart": "vite build && pm2 restart ecosystem.config.cjs --env production",
+    "build": "git pull && vite build && pm2 start ecosystem.config.cjs --env production",
+    "restart": "git pull && vite build && pm2 restart ecosystem.config.cjs --env production",
     "preview": "vite preview"
   },
   "dependencies": {
