@@ -6,7 +6,6 @@ import {
   Input,
   Select,
   Text,
-  Textarea,
   Grid,
   Image,
   Flex,
@@ -14,8 +13,9 @@ import {
 } from "@chakra-ui/react";
 import React, { useState, useEffect,useContext } from "react";
 import { UserDataContext } from "../../context/UserDataContext";
-import { BsEmojiSmile } from "react-icons/bs";
+
 import { config } from "../../data";
+import AutoResizeTextarea from "./AutoResizeTextarea";
 
 const InsertInfo = ({ setIsLoginModalOpen }) => {
   const [pptMedia, setPptMedia] = useState([]);
@@ -66,8 +66,10 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
   });
 
   useEffect(() => {
-        fetchData();
-  }, []);
+    if (!loading) {
+      fetchData();
+    }
+  }, [loading]);
 
   const fetchData = async () => {
     try {
@@ -654,7 +656,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             Give me help you fill data
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
             name="allData"
             value={allData}
             onChange={parsePropertyData}
@@ -906,7 +908,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             room description
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
               name="ppt_room_description"
               value={formData.ppt_room_description}
               onChange={handleChange}
@@ -959,7 +961,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             decoration
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
               name="ppt_decoration"
               value={formData.ppt_decoration}
               onChange={handleChange}
@@ -976,7 +978,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             description
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
               name="ppt_description"
               value={formData.ppt_description}
               onChange={handleChange}
@@ -1018,7 +1020,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             optional description
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
               name="ppt_optional_description"
               value={formData.ppt_optional_description}
               onChange={handleChange}
@@ -1035,7 +1037,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             view
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
               name="ppt_view"
               value={formData.ppt_view}
               onChange={handleChange}
@@ -1074,7 +1076,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             Near By
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
               name="ppt_nearby"
               value={formData.ppt_nearby}
               onChange={handleChange}
@@ -1091,7 +1093,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             Near By train
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
               name="ppt_nearbytrain"
               value={formData.ppt_nearbytrain}
               onChange={handleChange}
@@ -1108,7 +1110,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             Amenities and facilities (separate with , pls)
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
               name="ppt_facilities"
               value={formData.ppt_facilities}
               onChange={handleChange}
@@ -1272,7 +1274,7 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
             <FormLabel fontSize="sm" fontWeight="medium" color="gray.700">
             notes
             </FormLabel>
-            <Textarea
+            <AutoResizeTextarea
               name="notes"
               value={formData.notes}
               onChange={handleChange}
