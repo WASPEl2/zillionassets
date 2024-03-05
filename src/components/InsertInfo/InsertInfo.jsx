@@ -543,13 +543,15 @@ const InsertInfo = ({ setIsLoginModalOpen }) => {
       } else if (response.status === 401 ) {
         setUserData(null)
         setIsLoginModalOpen(true);
+      }else if (response.status === 502 ) {
+        alert(`Error token: please logout and login again`);
       } else {
         const errorResponse = await response.json();
         alert(`Error submitting form: ${errorResponse.error}`);
         console.error("Error submitting form:", errorResponse.error);
       }
     } catch (error) {
-      alert("Error submitting form2:", error);
+      alert("Error submitting form:", error);
       console.error("Error submitting form:", error);
     } finally {
       setLoading(false);

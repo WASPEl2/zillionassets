@@ -578,6 +578,8 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
       } else if (response.status === 401 ) {
         setUserData(null)
         setIsLoginModalOpen(true);
+      } else if (response.status === 502 ) {
+        alert(`Error token: please logout and login again`);
       } else {
         const errorResponse = await response.json();
         alert(`Error submitting form: ${errorResponse.error}`);
