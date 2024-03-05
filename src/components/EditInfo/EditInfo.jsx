@@ -102,8 +102,14 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
       setLoading(true);
       const response = await fetch(`${config.api}/foredite-asset-image/${propertyId}`);
       const data = await response.json();
-      setPptMedia(data.images);
-      setMainImageIndex(data.main_media_index);
+      if (response.status === 200) {
+        setPptMedia(data.images);
+        setMainImageIndex(data.main_media_index);
+      } else if (response.status === 404) {
+        console.log('Resource not found');
+      } else {
+        console.error('Unexpected response status:', response.status);
+      }
     } catch (error) {
       console.error('Error fetching image data:', error);
     } finally{

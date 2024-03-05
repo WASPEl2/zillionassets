@@ -26,7 +26,13 @@ const PropertyDetails = () => {
       try {
         const response = await fetch(`${config.api}/asset-image/${propertyId}`);
         const data = await response.json();
-        setImageData(data.images);
+        if (response.status === 200) {
+          setImageData(data.images);
+        } else if (response.status === 404) {
+          console.log('Resource not found');
+        } else {
+          console.error('Unexpected response status:', response.status);
+        }
       } catch (error) {
         console.error('Error fetching image data:', error);
       }

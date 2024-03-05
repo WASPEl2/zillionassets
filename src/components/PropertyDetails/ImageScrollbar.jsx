@@ -71,9 +71,9 @@ const ImageScrollbar = ({ data, isLoading }) => {
           whiteSpace="nowrap"
           width={{ base: 'full', xl: '65vw' }}
           onClick={toggleFullScreen}
-          // cursor="pointer"
+          cursor="pointer"
         >
-          {data.map((item, index) => (
+          {data?.map((item, index) => (
             <Box
               key={index}
               position="relative"
