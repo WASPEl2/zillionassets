@@ -11,30 +11,6 @@ const  Highlight = React.forwardRef((props, ref) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const containerRef = useRef(null);
 
-    useEffect(() => {
-        const handleWheel = (event) => {
-            if (containerRef.current && containerRef.current.contains(event.target)) {
-                event.preventDefault();
-                const scrollDirection = Math.sign(event.deltaY);
-                const newIndex = Math.min(
-                    Math.max(currentImageIndex + scrollDirection, 0),
-                    highlight.length - 1
-                );
-                scrollToIndex(newIndex);
-            }
-        };
-
-        if (containerRef.current) {
-            containerRef.current.addEventListener('wheel', handleWheel);
-        }
-
-        return () => {
-            if (containerRef.current) {
-                containerRef.current.removeEventListener('wheel', handleWheel);
-            }
-        };
-    }, [currentImageIndex, highlight]);
-
     const scrollToIndex = (index) => {
         const imageWidth = containerRef.current.children[0].offsetWidth;
         const scrollAmount = index * imageWidth;
