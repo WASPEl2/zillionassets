@@ -326,41 +326,41 @@ const PropertyDetails = () => {
                 }`
               ) : ''}
             </Text>
-            {userData && userData.role == "Admin" &&   <>
+            {userData && userData.role == "Admin" &&   <Box align='right'>
               {propertyData.partner_number && (
-                <Text fontSize="15px" align='right'>
+                <Text fontSize="15px">
                   tel: {propertyData.partner_number}
                 </Text>
               )}
               {propertyData.partner_line && (
-                <Text fontSize="15px" align='right'>
+                <Text fontSize="15px">
                   line: {propertyData.partner_line}
                 </Text>
               )}
               {propertyData.partner_mail && (
-                <Text fontSize="15px" align='right'>
+                <Text fontSize="15px">
                   more contact: {propertyData.partner_mail}
                 </Text>
               )}
               {propertyData.tranfer_fee && (
-                <Text fontSize="15px" align='right'>
+                <Text fontSize="15px">
                   tranfer fee: {propertyData.tranfer_fee}
                 </Text>
               )}
               {propertyData.notes && (
-                <ListWithIndentation items={propertyData.notes} />
+                <ListWithIndentation items={propertyData.notes}  />
               )}
               {propertyData.ppt_room_number && (
-                <Text fontSize="15px" align='right'>
+                <Text fontSize="15px">
                   room number: {propertyData.ppt_room_number}
                 </Text>
               )}
               {propertyData.ppt_tower_unit && (
-                <Text fontSize="15px" align='right'>
+                <Text fontSize="15px">
                   tower: {propertyData.ppt_tower_unit}
                 </Text>
               )}
-            </>}
+            </Box>}
             <Text mb='2vh' fontSize="15px" align='center'>
               Last Update {formatTime(propertyData.update_time)}
             </Text>
