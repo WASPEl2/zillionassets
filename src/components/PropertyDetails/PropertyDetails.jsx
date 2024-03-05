@@ -339,16 +339,14 @@ const PropertyDetails = () => {
                 </Text>
               )}
               {propertyData.notes && (
-                <Text fontSize="15px" align='right'>
-                  {propertyData.notes}
-                </Text>
+                <ListWithIndentation items={propertyData.notes} />
               )}
               {propertyData.ppt_room_number && (
                 <Text fontSize="15px" align='right'>
                   room number: {propertyData.ppt_room_number}
                 </Text>
               )}
-              {propertyData.ppt_room_number && (
+              {propertyData.ppt_tower_unit && (
                 <Text fontSize="15px" align='right'>
                   tower: {propertyData.ppt_tower_unit}
                 </Text>
