@@ -314,8 +314,11 @@ const PropertyDetails = () => {
           </Box>
           <VStack my='4vh' align='right' maxW='100%'  borderBottom="2px" borderColor="gray.200">
             <Text fontSize="15px" align='right'>
-              {propertyData.partner_type === 'Agent' ? 'Acr' : 'Ocr'}{' '}
-              {propertyData.partner_name.startsWith('K.') ? propertyData.partner_name : `K. ${propertyData.partner_name}`}
+              {propertyData.partner_name ? (
+                `${propertyData.partner_type === 'Agent' ? 'Acr' : 'Ocr'} ${
+                  propertyData.partner_name.startsWith('K.') ? propertyData.partner_name : `K. ${propertyData.partner_name}`
+                }`
+              ) : ''}
             </Text>
             {userData && userData.role == "Admin" &&   <>
               {propertyData.partner_number && (

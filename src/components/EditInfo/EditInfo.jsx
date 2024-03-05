@@ -102,7 +102,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
       setLoading(true);
       const response = await fetch(`${config.api}/foredite-asset-image/${propertyId}`);
       const data = await response.json();
-      setPptMedia((prevMedia) => [...prevMedia, ...data.images]);
+      setPptMedia(data.images);
       setMainImageIndex(data.main_media_index);
     } catch (error) {
       console.error('Error fetching image data:', error);

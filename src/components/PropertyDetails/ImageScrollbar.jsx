@@ -18,19 +18,24 @@ const ImageScrollbar = ({ data, isLoading }) => {
   };
 
   const scrollToIndex = (index) => {
-    let imageWidth = containerRef.current.children[0].offsetWidth;
-    let scrollAmount = index * imageWidth + 4;
-    containerRef.current.scrollTo({
-      left: scrollAmount,
-      behavior: 'smooth',
-    });
-    imageWidth = modalContainerRef.current.children[0].offsetWidth;
-    scrollAmount = index * imageWidth + 4;
-    modalContainerRef.current.scrollTo({
-      
-      left: scrollAmount,
-      behavior: 'smooth',
-    });
+    
+    if (containerRef.current){
+      const imageWidth = containerRef.current.children[0].offsetWidth;
+      const scrollAmount = index * imageWidth + 4;
+      containerRef.current.scrollTo({
+        left: scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+    if (modalContainerRef.current){
+      const imageWidth = modalContainerRef.current.children[0].offsetWidth;
+      const scrollAmount = index * imageWidth + 4;
+      modalContainerRef.current.scrollTo({
+        left: scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+    
     setCurrentImageIndex(index);
   };
 
@@ -156,15 +161,15 @@ const ImageScrollbar = ({ data, isLoading }) => {
                     overflow="hidden"
                     p="1"
                     display="inline-block"
-                    width='100%'
-                    height='auto'
+                    width='auto'
+                    height='100%'
                     onClick={() => scrollToIndex(index)}
                   >
                     <Image
                       alt="property"
                       src={`${config.api}/image-data/${item.media_id}`}
-                      width='100%'
-                      height='80vh'
+                      width='80vw'
+                      maxHeight='80vh'
                       objectFit="contain"
                       loading="lazy"
                     />

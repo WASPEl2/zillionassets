@@ -109,6 +109,12 @@ const HouseProvider = ({ children }) => {
         
         // Filter the properties array to find the property with the given ID
         const property = properties.find(property => property.ppt_id === propertyId);
+
+        if (property) {
+            // Change isHighlight to true if it's 0, otherwise false
+            property.isHighlight = property.isHighlight == 1 ? true : false;
+        }
+    
         return property;
     };
 

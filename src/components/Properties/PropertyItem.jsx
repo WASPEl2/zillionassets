@@ -44,7 +44,7 @@ const PropertyItem = ({ property }) => {
           objectFit="cover"
           alt="property"
           borderTopStartRadius="xl"
-          loading="lazy"
+          // loading="lazy"
         />
 
         {/* Edit icon */}
