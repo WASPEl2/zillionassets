@@ -1331,6 +1331,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
         
         
         <Flex  w='100%' justify='end'>
+          {loading && pptMedia.length === 0&& <Box my="auto" mr={4} ><Text>wait for image loading</Text></Box>}
           <Button
             type="submit"
             colorScheme="blue"
