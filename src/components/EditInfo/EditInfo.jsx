@@ -29,7 +29,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
   const [condoList, setCondoList] = useState([]);
   const [selectedCondo, setSelectedCondo] = useState('');
   const { setUserData } = useContext(UserDataContext);
-  const { purpose ,getPropertyById } = useContext(HouseContext);
+  const { searchHandler ,getPropertyById } = useContext(HouseContext);
 
   const [formData, setFormData] = useState({
     unit_code: "",
@@ -574,6 +574,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
         setAllData("");
         setSelectedCondo("");
         window.scrollTo({ top: 0, behavior: "smooth" });
+        searchHandler(); // refetch data
         navigate(`/property-details/${propertyId}`);
       } else if (response.status === 401 ) {
         setUserData(null)
@@ -1331,6 +1332,7 @@ const EditInfo = ({ setIsLoginModalOpen }) => {
         
         
         <Flex  w='100%' justify='end'>
+          {loading && pptMedia.length === 0&& <Box my="auto" mr={4} ><Text>wait for image loading</Text></Box>}
           <Button
             type="submit"
             colorScheme="blue"

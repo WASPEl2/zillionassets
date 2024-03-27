@@ -50,6 +50,11 @@ const HouseProvider = ({ children }) => {
         setCurrentProperties(currentProperties);
     };
 
+    const searchHandler = () => {
+        fetchData();
+        setCurrentPage(1);
+    };
+
     const fetchData = async (Query) => {
 
             setIsLoading(true);
@@ -58,7 +63,7 @@ const HouseProvider = ({ children }) => {
             try {
                 const queryParams = new URLSearchParams({
                 });
-                let newSearchQuery = Query;
+                let newSearchQuery = Query || urlSearchQuery;
 
                 const bedroomMatch = newSearchQuery.match(/(\d+)\s*(bedroom|bed)\b/i);
                 if (bedroomMatch) {
@@ -145,6 +150,7 @@ const HouseProvider = ({ children }) => {
     return (
         <HouseContext.Provider value={{
             properties: currentProperties,
+            searchHandler,
             highlight,
             primaryAreas,
             primaryArea,

@@ -4,4 +4,3 @@ export const bannerData = [
 export const config = {
     api: 'https://zillionassets.pw', 
 };
-

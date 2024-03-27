@@ -36,6 +36,7 @@ const App = () => {
                 <EditAsset setIsLoginModalOpen={setIsLoginModalOpen}/>
               </ProtectedRoute>
             }/>
+            <Route path="/api/*" element={null} />
             <Route path="*"
                   element={<main style={{ padding: "1rem" }}>
                               <p>There's nothing here!</p>
